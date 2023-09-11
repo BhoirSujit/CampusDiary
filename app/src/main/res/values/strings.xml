@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Campus Diary</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="Gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="Campus">
+        <item>JSM Collage Alibag</item>
+        <item>PNP Collage Alibag</item>
+    </string-array>
+
+    <string-array name="Campusplus">
+        <item>Universal</item>
+        <item>JSM Collage Alibag</item>
+        <item>PNP Collage Alibag</item>
+    </string-array>
+</resources>

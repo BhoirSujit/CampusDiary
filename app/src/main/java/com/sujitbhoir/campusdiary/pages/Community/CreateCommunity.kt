@@ -1,0 +1,194 @@
+package com.sujitbhoir.campusdiary.pages.Community
+
+
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.databinding.ActivityCreateCommunityBinding
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+
+
+class CreateCommunity : AppCompatActivity() {
+
+    lateinit var binding : ActivityCreateCommunityBinding
+    private val TAG = "createcommunityTAG"
+    private lateinit var storage : FirebaseStorage
+    private lateinit var auth : FirebaseAuth
+    private lateinit var db : FirebaseFirestore
+    var imgUri = Uri.parse("android.resource://my.package.name/" + R.drawable.profile_icon)
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityCreateCommunityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        //initialize
+        db = Firebase.firestore
+        auth = Firebase.auth
+        storage = Firebase.storage
+
+
+
+        //back
+        binding.toolbar1.setNavigationIcon(R.drawable.arrow_back_24px)
+        binding.toolbar1.setNavigationOnClickListener {
+            finish()
+        }
+
+        //set tags
+        val taglist = arrayOf("Astrology","Writing", "Singing", "Painting", "Drawing","Fitness","NCC","Yoga","Gym","Cooking","Nature","Poetry","Travelling","Dance","Books","Cricket","Coding")
+        AddChipsInView(taglist, binding.chipGrouptags)
+
+
+        //set campus
+        val campusAdapter = ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.Campusplus))
+        //campusAdapter.insert("all", 0)
+        binding.dpCampus.setAdapter(campusAdapter)
+
+        //upload pic
+        val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
+            if (it.resultCode == RESULT_OK)
+            {
+                imgUri = it.data?.data!!
+                val requestOptions = RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .circleCrop()
+                //.override(100, 100)
+
+                val circularProgressDrawable = CircularProgressDrawable(this)
+                circularProgressDrawable.strokeWidth = 5f
+                circularProgressDrawable.centerRadius = 30f
+                circularProgressDrawable.start()
+
+                //load pitcher
+                Glide.with(this)
+                    .load(imgUri)
+                    .placeholder(circularProgressDrawable)
+                    .apply(requestOptions)
+                    .into(binding.profilepic)
+                    .onLoadFailed(resources.getDrawable(R.drawable.user))
+
+
+            }
+        }
+        binding.btnEditicon.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            resultActivity.launch(intent)
+        }
+
+        //discard
+        binding.btnDiscard.setOnClickListener {
+            finish()
+        }
+
+        //btn create
+        binding.btnCreate.setOnClickListener {
+            createCommunity()
+        }
+
+
+    }
+
+    fun createCommunity()
+    {
+        val checkedChipIds = binding.chipGrouptags.checkedChipIds
+        val tags = ArrayList<String>()
+
+        for (chip in checkedChipIds)
+        {
+            tags.add(findViewById<Chip>(chip).text.toString())
+        }
+
+        val ref = Firebase.firestore.collection("community").document()
+        val id = ref.id
+
+        val communityInfo : HashMap<String, Any> = hashMapOf(
+          "id" to id,
+        "name" to binding.tvFname.text.toString(),
+       "about" to binding.tvAbout.text.toString(),
+         "campus" to binding.dpCampus.text.toString(),
+         "admin" to auth.currentUser!!.uid,
+            "members" to listOf(auth.currentUser!!.uid),
+        "tags"  to tags
+        )
+
+        ref.set(communityInfo)
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
+                //compress file
+                var bitmap: Bitmap? = null
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imgUri)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                val baos = ByteArrayOutputStream()
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, 20, baos)
+
+                val data = baos.toByteArray()
+
+                val ref2 = storage.reference.child("communityIcon/${id}.png")
+                ref2.putBytes(data)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "successfull upload")
+
+                        Toast.makeText(this, "Successfully Created Community", Toast.LENGTH_LONG).show()
+                        finish()
+
+                    }
+                    .addOnFailureListener{
+                        Log.d(TAG, "unsuccessfull upload: $it")
+                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
+                    }
+
+
+
+            }
+            .addOnFailureListener {
+                Log.w(TAG, "Error adding document", it)
+            }
+
+    }
+
+    private fun uploadIcon(uri : Uri, name : String)
+    {
+
+    }
+
+    fun AddChipsInView(chipslist : Array<String>, view : ChipGroup, style : Int = com.google.android.material.R.style.Widget_Material3_Chip_Filter)
+    {
+        for (chipname in chipslist)
+        {
+            val chip = Chip(this )
+            chip.setChipDrawable(ChipDrawable.createFromAttributes(this, null, 0, style))
+            chip.text = chipname
+            view.addView(chip)
+        }
+    }
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_nav_home"
+        android:enabled="true"
+        android:title="Home"
+        android:icon="@drawable/home_icon" />
+
+    <item
+        android:id="@+id/bottom_nav_community"
+        android:enabled="true"
+        android:title="explore"
+        android:icon="@drawable/explore_icon" />
+    <item
+        android:id="@+id/bottom_nav_create"
+        android:enabled="true"
+        android:title="Create"
+        android:icon="@drawable/add_box_white_24dp" />
+    <item
+        android:id="@+id/bottom_nav_Communication"
+        android:title="chat"
+        android:enabled="true"
+        android:icon="@drawable/chat_icon"/>
+    <item
+        android:id="@+id/bottom_nav_marketplace"
+        android:title="store"
+        android:enabled="true"
+        android:icon="@drawable/store_icon"/>
+</menu>
