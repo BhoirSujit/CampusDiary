@@ -38,7 +38,6 @@ class ConfirmPassword : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
-
         username = intent.getStringExtra("username").toString()
         fullname = intent.getStringExtra("fullName").toString()
         email = intent.getStringExtra("email").toString()
@@ -67,9 +66,7 @@ class ConfirmPassword : AppCompatActivity() {
             }
 
         }
-
         setContentView(binding.root)
-
     }
 
     private fun next()
@@ -98,10 +95,6 @@ class ConfirmPassword : AppCompatActivity() {
             return false
         }
 
-        // Add more validation rules as per your requirements
-        // For example: at least one uppercase letter, one digit, and one special character
-
-        // If all checks pass, the password is considered valid
         return true
     }
 }

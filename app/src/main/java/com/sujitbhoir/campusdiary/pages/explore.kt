@@ -28,6 +28,7 @@ import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.FragmentExploreBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
@@ -38,6 +39,7 @@ class explore : Fragment() {
     private  val TAG = "exploreTAG"
     lateinit var data : UserData
     lateinit var auth : FirebaseAuth
+    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,13 +49,14 @@ class explore : Fragment() {
         setHasOptionsMenu(true)
         //
         data = DataHandler().getUserData(requireContext())!!
+        firebaseStorageHandler = FirebaseStorageHandler(requireContext())
         val db = Firebase.firestore
         auth = Firebase.auth
         val comsData = ArrayList<CommunityData>()
         val comsUData = ArrayList<CommunityData>()
 
         //set profile pic
-        DataHandler().setProfilePic(requireContext(), data.id,
+        firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,

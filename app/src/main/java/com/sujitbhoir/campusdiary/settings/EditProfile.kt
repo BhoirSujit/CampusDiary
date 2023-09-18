@@ -32,6 +32,8 @@ import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityEditProfileBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -47,6 +49,9 @@ class EditProfile : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private lateinit var data : UserData
     private lateinit var db : FirebaseFirestore
+
+    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
+    private lateinit var firebaseFirestoreHandler: FirebaseFirestoreHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +69,8 @@ class EditProfile : AppCompatActivity() {
         db = Firebase.firestore
         auth = Firebase.auth
         storage = Firebase.storage
+        firebaseStorageHandler = FirebaseStorageHandler(this)
+        firebaseFirestoreHandler = FirebaseFirestoreHandler()
 
         //set fields
         binding.tvFname.text = Editable.Factory.getInstance().newEditable(data.name)
@@ -78,7 +85,7 @@ class EditProfile : AppCompatActivity() {
 
 
         //set image
-        DataHandler().setProfilePic(this, Firebase.auth.currentUser!!.uid, binding.profilepic)
+        firebaseStorageHandler.setProfilePic(data.profilePicId, binding.profilepic)
 
 
         //upload pic
@@ -87,7 +94,14 @@ class EditProfile : AppCompatActivity() {
             if (it.resultCode == RESULT_OK)
             {
                 val uri = it.data?.data!!
-                uploadProfilePic(uri)
+                firebaseStorageHandler.uploadProfilePic(uri) {
+                    //save profilepicid
+                    firebaseFirestoreHandler.updateProfilePicId(auth.currentUser!!.uid, it)
+                    {
+                        Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
+                        firebaseStorageHandler.setProfilePic(it, binding.profilepic)
+                    }
+                }
             }
         }
         binding.btnEditprofilepic.setOnClickListener {
@@ -99,7 +113,6 @@ class EditProfile : AppCompatActivity() {
         binding.btnDiscard.setOnClickListener {
             finish()
         }
-
 
         //update
         binding.btnUpdate.setOnClickListener {

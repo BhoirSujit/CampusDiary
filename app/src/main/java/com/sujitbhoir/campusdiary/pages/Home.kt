@@ -32,6 +32,7 @@ import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.FragmentHomeBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import java.io.File
 
@@ -41,12 +42,13 @@ class Home : Fragment() {
     private val TAG = "homeTAG"
     private lateinit var cont: Context
     private lateinit var data : UserData
+    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
     override fun onResume() {
         super.onResume()
         data = DataHandler().getUserData(requireContext())!!
         //set profile pic
-        DataHandler().setProfilePic(requireContext(), data.id,
+        firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -72,6 +74,7 @@ class Home : Fragment() {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         cont = container!!.context
+        firebaseStorageHandler = FirebaseStorageHandler(requireContext())
 
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -79,7 +82,7 @@ class Home : Fragment() {
         data = DataHandler().getUserData(requireContext())!!
 
         //set profile pic
-        DataHandler().setProfilePic(requireContext(), data.id,
+        firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,

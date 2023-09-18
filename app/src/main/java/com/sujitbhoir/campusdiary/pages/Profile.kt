@@ -16,6 +16,7 @@ import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.auth.ForgetPassword
 import com.sujitbhoir.campusdiary.databinding.ActivityProfileBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.settings.EditProfile
 import com.sujitbhoir.campusdiary.settings.ManageInterests
@@ -28,10 +29,11 @@ class Profile : AppCompatActivity() {
     private val TAG = "profileTAG"
     private lateinit var data : UserData
     private lateinit var dataHandler: DataHandler
+    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        dataHandler.setProfilePic(this, Firebase.auth.currentUser!!.uid, binding.profilepic)
+        firebaseStorageHandler.setProfilePic(data.profilePicId, binding.profilepic)
 
     }
 
@@ -41,6 +43,7 @@ class Profile : AppCompatActivity() {
         setContentView(binding.root)
 
         dataHandler = DataHandler()
+        firebaseStorageHandler = FirebaseStorageHandler(this)
         data = DataHandler().getUserData(baseContext)!!
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -53,7 +56,7 @@ class Profile : AppCompatActivity() {
         binding.campusname.text = data.campus
 
         //set image
-        dataHandler.setProfilePic(this, Firebase.auth.currentUser!!.uid, binding.profilepic)
+        firebaseStorageHandler.setProfilePic(data.profilePicId, binding.profilepic)
 
         //edit profile button
         binding.btnEditprofile.setOnClickListener {
@@ -90,6 +93,6 @@ class Profile : AppCompatActivity() {
         binding.tvUname.text = data.username
 
         //set image
-        dataHandler.setProfilePic(this, Firebase.auth.currentUser!!.uid, binding.profilepic)
+        firebaseStorageHandler.setProfilePic(data.profilePicId, binding.profilepic)
     }
 }

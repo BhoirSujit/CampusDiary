@@ -5,6 +5,7 @@ data class UserData(
     var name : String = "",
     var email : String = "",
     var username : String = "",
+    var profilePicId : String = "",
     var age : String = "",
     var about : String = "",
     var gender : String = "",
