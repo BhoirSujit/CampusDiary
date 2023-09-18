@@ -30,6 +30,7 @@ import com.sujitbhoir.campusdiary.R
 
 import com.sujitbhoir.campusdiary.databinding.FragmentCommunicationBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 
@@ -37,6 +38,7 @@ class Communication : Fragment() {
     private lateinit var binding : FragmentCommunicationBinding
     private val TAG = "CommunicationTAG"
     private lateinit var data : UserData
+    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
     data class SessionsInfo(
         val sessionid : String = "",
@@ -55,13 +57,14 @@ class Communication : Fragment() {
     ): View {
         binding = FragmentCommunicationBinding.inflate(inflater, container, false)
         data = DataHandler().getUserData(requireContext())!!
+        firebaseStorageHandler = FirebaseStorageHandler(requireContext())
 
         val db = Firebase.firestore
         val auth = Firebase.auth
 
 
         //set profile pic
-        DataHandler().setProfilePic(requireContext(), data.id,
+        firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -177,7 +180,7 @@ class ChatListAdapter(private val context : Context, private val dataSet: ArrayL
         viewHolder.message.text = dataSet[position].lasmes
         viewHolder.lmtime.text = dataSet[position].lastime
 
-        DataHandler().setProfilePic(context, dataSet[position].members[0], viewHolder.profilepic)
+        FirebaseStorageHandler(context).setProfilePic(dataSet[position].members[0], viewHolder.profilepic)
 
     }
 

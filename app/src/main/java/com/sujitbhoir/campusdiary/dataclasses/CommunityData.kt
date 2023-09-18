@@ -3,6 +3,7 @@ package com.sujitbhoir.campusdiary.dataclasses
 data class CommunityData(
     var id : String = "",
     var name : String = "",
+    var communityPic : String = "",
     var about : String = "",
     var campus : String = "",
     var members : List<String> = listOf(),

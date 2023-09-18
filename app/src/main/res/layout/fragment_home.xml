@@ -16,12 +16,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
+
+
             android:id="@+id/appBar"
             style="@style/Widget.Material3.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="10dp"
             app:menu="@menu/home_top_menu"
+            app:titleTextAppearance="@style/ThemeCampusDiaryTopBarHome"
             app:title="@string/app_name"
             app:titleTextColor="#407bff" />
 

@@ -16,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityJoinCampusBinding
+import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.settings.EditProfile
 import com.sujitbhoir.campusdiary.settings.ManageInterests
@@ -68,20 +69,13 @@ class JoinCampus : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:success")
                     val uid = task.result.user!!.uid
 
-                    val userinfo : HashMap<String, String> = hashMapOf(
-                        "username" to username,
-                        "name" to fullname,
-                        "email" to email,
-                        "id" to uid,
-                        "campus" to binding.dpCampus.text.toString()
-                    )
-
-                    db.collection("users")
-                        .document(uid)
-                        .set(userinfo)
-                        .addOnSuccessListener {
-                            Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-
+                    FirebaseFirestoreHandler().addUserData(
+                        uid = uid,
+                        userName = username,
+                        name = fullname,
+                        email = email,
+                        campus = binding.dpCampus.text.toString(),
+                        afterAdding = {
                             DataHandler().updateUserData(this)
 
                             val intent = Intent(this, MainActivity::class.java)
@@ -95,12 +89,11 @@ class JoinCampus : AppCompatActivity() {
                             val intent3 = Intent(this, ManageInterests::class.java)
                             startActivity(intent3)
                             finish()
-
-                        }
-                        .addOnFailureListener {
-                            Log.w(TAG, "Error adding document", it)
+                        },
+                        onError = {
                             Toast.makeText(this, "Something went Wrong", Toast.LENGTH_LONG).show()
                         }
+                    )
 
 
 
