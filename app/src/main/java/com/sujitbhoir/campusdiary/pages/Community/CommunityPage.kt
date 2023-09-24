@@ -1,23 +1,14 @@
 package com.sujitbhoir.campusdiary.pages.Community
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityCommunityPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
-import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.nio.charset.Charset
 
 class CommunityPage : AppCompatActivity() {
 

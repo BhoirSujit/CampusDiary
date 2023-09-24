@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.search.SearchBar
-import com.google.android.material.search.SearchView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -28,7 +27,7 @@ import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.FragmentExploreBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
@@ -48,7 +47,7 @@ class explore : Fragment() {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         //
-        data = DataHandler().getUserData(requireContext())!!
+        data = DataHandler.getUserData(requireContext())!!
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
         val db = Firebase.firestore
         auth = Firebase.auth

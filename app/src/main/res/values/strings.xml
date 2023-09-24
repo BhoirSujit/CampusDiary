@@ -18,4 +18,15 @@
         <item>JSM Collage Alibag</item>
         <item>PNP Collage Alibag</item>
     </string-array>
+
+    <string-array name="ProductCondition">
+        <item>New</item>
+        <item>Used</item>
+        <item>Broken</item>
+    </string-array>
+
+    <string-array name="ProductTags">
+        <item>Book</item>
+    </string-array>
+
 </resources>

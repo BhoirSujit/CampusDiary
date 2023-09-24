@@ -3,38 +3,25 @@ package com.sujitbhoir.campusdiary.pages
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.net.toUri
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.adapters.PostListAdapter
 import com.sujitbhoir.campusdiary.databinding.FragmentHomeBinding
+import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
-import java.io.File
 
 
 class Home : Fragment() {
@@ -44,9 +31,10 @@ class Home : Fragment() {
     private lateinit var data : UserData
     private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
+
     override fun onResume() {
         super.onResume()
-        data = DataHandler().getUserData(requireContext())!!
+        data = DataHandler.getUserData(requireContext())!!
         //set profile pic
         firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
@@ -79,7 +67,7 @@ class Home : Fragment() {
         val db = Firebase.firestore
         val auth = Firebase.auth
 
-        data = DataHandler().getUserData(requireContext())!!
+        data = DataHandler.getUserData(requireContext())!!
 
         //set profile pic
         firebaseStorageHandler.setProfilePic( data.profilePicId,
@@ -116,8 +104,39 @@ class Home : Fragment() {
         }
 
 
+        //showpost
+        loadPost()
+
 
 
         return binding.root
+    }
+
+    fun loadPost()
+    {
+        val db = Firebase.firestore
+        val auth = Firebase.auth
+
+        val postArr = ArrayList<PostData>()
+
+        val recyclerView = binding.recyclePost
+        recyclerView.layoutManager = LinearLayoutManager(cont)
+        db.collection("posts")
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val pData = doc.toObject(PostData::class.java) as PostData
+                    postArr.add(pData)
+                    val postListAdapter = PostListAdapter(requireContext(), postArr)
+                    recyclerView.adapter = postListAdapter
+
+                }
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
     }
 }

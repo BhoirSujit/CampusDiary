@@ -12,7 +12,7 @@ import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Communication
 import com.sujitbhoir.campusdiary.pages.Community.CreatePost
 import com.sujitbhoir.campusdiary.pages.Home
-import com.sujitbhoir.campusdiary.pages.Marketplace
+import com.sujitbhoir.campusdiary.pages.marketplace.Marketplace
 import com.sujitbhoir.campusdiary.pages.explore
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //init data
-        DataHandler().updateUserData(this)
+        DataHandler.updateUserData(this)
 
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        DataHandler().updateUserData(baseContext)
+        DataHandler.updateUserData(baseContext)
 
 //        //get user info
 //        db.collection("users").document(auth.currentUser!!.uid)

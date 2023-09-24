@@ -42,16 +42,13 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
         tvabout.text = userData.about
 
         reqbtn.setOnClickListener {
-
-
-
             val dialog = Dialog(requireContext() , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
             dialog.setContentView(R.layout.request_dialog_box)
             val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
             val btnclose = dialog.findViewById<Button>(R.id.btn_close)
             val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
 
-            val myData = DataHandler().getUserData(requireContext())!!
+            val myData = DataHandler.getUserData(requireContext())!!
 
             btnsend.setOnClickListener {
                 //request
