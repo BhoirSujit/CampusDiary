@@ -62,8 +62,7 @@ class CreateChat : AppCompatActivity() {
         //initialize
         val db = Firebase.firestore
         val auth = Firebase.auth
-        val dataHandler = DataHandler()
-        val myData = dataHandler.getUserData(this)!!
+        val myData = DataHandler.getUserData(this)!!
 
 
         //request

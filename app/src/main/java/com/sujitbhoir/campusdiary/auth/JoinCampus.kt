@@ -3,8 +3,6 @@ package com.sujitbhoir.campusdiary.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract.Data
-import android.provider.ContactsContract.Profile
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -16,11 +14,9 @@ import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityJoinCampusBinding
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
-import com.sujitbhoir.campusdiary.settings.EditProfile
 import com.sujitbhoir.campusdiary.settings.ManageInterests
-import io.grpc.ManagedChannelProvider
 
 class JoinCampus : AppCompatActivity() {
 
@@ -76,7 +72,7 @@ class JoinCampus : AppCompatActivity() {
                         email = email,
                         campus = binding.dpCampus.text.toString(),
                         afterAdding = {
-                            DataHandler().updateUserData(this)
+                            DataHandler.updateUserData(this)
 
                             val intent = Intent(this, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION

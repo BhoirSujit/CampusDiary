@@ -1,41 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".pages.Marketplace">
+    tools:context=".pages.marketplace.Marketplace">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeCampusDiaryTopBar"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+
+
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topBar"
             style="@style/Widget.Material3.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="10dp"
             app:menu="@menu/marketplace_top_menu"
-            app:title="Marketplace"
-            />
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:dividerColor="#CAC4D0"
-           />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            app:title="Marketplace" />
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <View
+            android:id="@+id/divider21"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="vertical">
 
 
-</FrameLayout>
+            <com.google.android.material.chip.ChipGroup
+                app:singleLine="true"
+                android:paddingHorizontal="8dp"
+                android:id="@+id/chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Assist"
+                    app:chipIcon="@drawable/tune_24px"
+                    android:text="filter"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Chip.Suggestion"
+                    android:text="New"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+
+
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

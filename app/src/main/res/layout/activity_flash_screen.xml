@@ -6,4 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".FlashScreen">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.499"
+        android:src="@drawable/campus_dairy_logo_foreground"
+        />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:textSize="18dp"
+        android:textColor="?colorPrimary"
+        android:text="Made With Love"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="@+id/imageView4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

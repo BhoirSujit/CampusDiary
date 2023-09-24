@@ -2,7 +2,6 @@ package com.sujitbhoir.campusdiary.pages.Community
 
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -27,8 +26,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityCreateCommunityBinding
-import java.io.ByteArrayOutputStream
-import java.io.IOException
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 
 
 class CreateCommunity : AppCompatActivity() {
@@ -138,35 +137,20 @@ class CreateCommunity : AppCompatActivity() {
         "tags"  to tags
         )
 
+
+
+
+
         ref.set(communityInfo)
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
                 //compress file
-                var bitmap: Bitmap? = null
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imgUri)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                val baos = ByteArrayOutputStream()
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-
-                val data = baos.toByteArray()
-
-                val ref2 = storage.reference.child("communityIcon/${id}.png")
-                ref2.putBytes(data)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "successfull upload")
-
+                FirebaseStorageHandler(this).uploadCommunityPic(imgUri) {
+                    FirebaseFirestoreHandler().updateCommunityPicId(id, it) {
                         Toast.makeText(this, "Successfully Created Community", Toast.LENGTH_LONG).show()
-                        finish()
-
-                    }
-                    .addOnFailureListener{
-                        Log.d(TAG, "unsuccessfull upload: $it")
-                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
                     }
 
+                }
 
 
             }

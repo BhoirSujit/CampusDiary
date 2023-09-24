@@ -2,22 +2,16 @@ package com.sujitbhoir.campusdiary.pages
 
 
 
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +24,7 @@ import com.sujitbhoir.campusdiary.R
 
 import com.sujitbhoir.campusdiary.databinding.FragmentCommunicationBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 
@@ -56,7 +50,7 @@ class Communication : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunicationBinding.inflate(inflater, container, false)
-        data = DataHandler().getUserData(requireContext())!!
+        data = DataHandler.getUserData(requireContext())!!
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
 
         val db = Firebase.firestore
