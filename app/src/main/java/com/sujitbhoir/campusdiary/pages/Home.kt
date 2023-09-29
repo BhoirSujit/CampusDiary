@@ -30,37 +30,24 @@ class Home : Fragment() {
     private lateinit var cont: Context
     private lateinit var data : UserData
     private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
+    private var view : View? = null
 
 
-    override fun onResume() {
-        super.onResume()
-        data = DataHandler.getUserData(requireContext())!!
-        //set profile pic
-        firebaseStorageHandler.setProfilePic( data.profilePicId,
-            object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    // Find the MenuItem by its ID
-                    val menuItem = binding.appBar.menu.findItem(R.id.profile_pic)
 
-                    // Set the loaded image as the icon for the menu item
-                    menuItem.icon = resource
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // Handle clearing if needed
-                }
-            })
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        if (view == null)
+        {
+        }
+
+
+
+
         cont = container!!.context
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
 
@@ -108,7 +95,6 @@ class Home : Fragment() {
         loadPost()
 
 
-
         return binding.root
     }
 
@@ -130,7 +116,7 @@ class Home : Fragment() {
                 {
                     val pData = doc.toObject(PostData::class.java) as PostData
                     postArr.add(pData)
-                    val postListAdapter = PostListAdapter(requireContext(), postArr)
+                    val postListAdapter = PostListAdapter(cont, postArr)
                     recyclerView.adapter = postListAdapter
 
                 }

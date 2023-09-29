@@ -8,6 +8,7 @@
     >
 
     <ImageView
+
         android:id="@+id/iv_com_pic"
         android:layout_width="28dp"
         android:layout_height="28dp"
@@ -17,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_post_title" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_cname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
 
         android:layout_marginEnd="16dp"
         app:circularflow_radiusInDP="10dp"
@@ -43,25 +45,26 @@
         app:layout_constrainedHeight="true"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="258dp"
+        app:layout_constraintHeight_max="198dp"
+
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_post_title"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:maxLines="3"
-        android:text="Title"
 
+        android:text="Title"
         android:textSize="18sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_image" />
@@ -78,8 +81,9 @@
         android:id="@+id/divider17"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +97,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_cname"
         app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
         app:layout_constraintTop_toTopOf="@+id/tv_cname"
-        app:srcCompat="@drawable/favorite_24px" />
+        android:background="@drawable/like_icon" />
 
     <TextView
         android:id="@+id/tv_like_count"

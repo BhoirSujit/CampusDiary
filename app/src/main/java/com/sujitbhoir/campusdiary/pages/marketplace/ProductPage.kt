@@ -58,9 +58,9 @@ class ProductPage : AppCompatActivity() {
         //set data
         MarketplaceManager(this).getProductData(productId) {
             binding.tvName.text = it.name
-            binding.tvPrize.text = "Rs "+it.price
+            binding.tvPrize.text = it.price
             binding.tvCampus.text = it.campus
-            binding.tvDetails.text = "Posted On :${getDate(it.uploadDate.toLong())}\nCondition : ${it.condition}\n${it.details}"
+            binding.tvDetails.text = "Posted On : ${getDate(it.uploadDate.toLong())}\nCondition : ${it.condition}\n${it.details}"
             binding.tvUname.text = it.sellerName
             whatsappno = it.contactWhatsapp
             uploaddate = getDate(it.uploadDate.toLong())

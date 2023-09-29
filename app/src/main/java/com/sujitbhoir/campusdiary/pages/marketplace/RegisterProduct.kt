@@ -3,6 +3,7 @@ package com.sujitbhoir.campusdiary.pages.marketplace
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +40,7 @@ class RegisterProduct : AppCompatActivity() {
         }
 
         //tags
-        val taglist = resources.getStringArray(R.array.ProductTags)
+        val taglist = resources.getStringArray(R.array.MarketplaceCategory)
         AddChipsInView(taglist, binding.chipGroupTags)
 
         //condition
@@ -51,8 +52,10 @@ class RegisterProduct : AppCompatActivity() {
                 if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                     // Use the uri to load the image
                     filePaths = it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
+                    binding.placeholderimage.visibility = View.GONE
 
                     val list = mutableListOf<CarouselItem>()
+                    list.reverse()
 
                     for (file in filePaths)
                     {

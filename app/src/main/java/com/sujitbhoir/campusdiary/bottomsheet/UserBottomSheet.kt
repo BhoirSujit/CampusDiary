@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
@@ -35,11 +35,18 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
         val tvuname = view.findViewById<TextView>(R.id.tv_uname)
         val profilepic = view.findViewById<ImageView>(R.id.profilepic)
         val tvabout = view.findViewById<TextView>(R.id.tv_about1)
-        val reqbtn = view.findViewById<Button>(R.id.btn_editprofile)
+        val reqbtn = view.findViewById<LinearLayout>(R.id.contact_admin)
+        val repbtn = view.findViewById<LinearLayout>(R.id.report_user)
+        val campusname = view.findViewById<TextView>(R.id.campusname)
 
         tvname.text = userData.name
         tvuname.text = userData.username
         tvabout.text = userData.about
+        campusname.text = userData.campus
+
+
+
+
 
         reqbtn.setOnClickListener {
             val dialog = Dialog(requireContext() , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
@@ -53,16 +60,15 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
             btnsend.setOnClickListener {
                 //request
                 val reqmes : HashMap<String, Any> = hashMapOf(
+                    "id" to userData.id+myData.id,
                     "sender" to myData.id,
-                    "sender_name" to myData.name,
-                    "sender_uname" to myData.username,
                     "receiver" to userData.id,
                     "message" to tvreq.text.toString(),
-                    "time" to Timestamp.now().toDate().toString(),
-                    "flag" to false
+                    "time" to Timestamp.now(),
+                    "status" to "requested"
                 )
 
-                val ref = Firebase.firestore.collection("request")
+                val ref = Firebase.firestore.collection("requests")
                 ref.document(userData.id+myData.id)
                     .set(reqmes)
                     .addOnSuccessListener {

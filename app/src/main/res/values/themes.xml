@@ -74,9 +74,14 @@
         <item name="cornerSize">5%</item>
     </style>
 
+    <style name="Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton"/>
+
+    <style name="Button" parent="Widget.Material3.Button"/>
+
 
 
     <style name="Theme.CampusDiary" parent="Base.Theme.CampusDiary" />
+
 
 
 

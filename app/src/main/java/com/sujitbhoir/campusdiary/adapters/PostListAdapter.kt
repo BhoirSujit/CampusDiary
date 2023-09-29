@@ -1,6 +1,7 @@
 package com.sujitbhoir.campusdiary.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,19 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.rpc.context.AttributeContext.Auth
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.PostsManager
 import com.sujitbhoir.campusdiary.pages.Communication
+import com.sujitbhoir.campusdiary.pages.Community.PostPage
 import org.w3c.dom.Text
 import java.util.Calendar
+import java.util.HashMap
 import java.util.Locale
 
 class PostListAdapter(private val context : Context, private val dataSet: ArrayList<PostData>) :
@@ -62,27 +69,43 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: PostListAdapter.ViewHolder, position: Int) {
-        holder.comName.text = "${dataSet[position].communityName} - ${dataSet[position].creationDate.toDate().day}"
+        holder.comName.text = "${dataSet[position].communityName} - ${dataSet[position].creationDate}"
 
         holder.title.text = dataSet[position].title
         FirebaseStorageHandler(context).setCommunityPic(dataSet[position].profilePicId, holder.comPic)
         holder.likeCount.text = dataSet[position].likes.size.toString()
 
-        if (dataSet[position].images.toInt() != 0)
+        holder.like.isSelected = dataSet[position].likes.contains(Firebase.auth.currentUser!!.uid)
+
+
+        fun doLike()
         {
-            FirebaseStorageHandler(context).getPostMedia(dataSet[position].id+"1")
+            PostsManager(context).likeAPost(dataSet[position].id)
             {
-                val circularProgressDrawable = CircularProgressDrawable(context)
-                circularProgressDrawable.strokeWidth = 5f
-                circularProgressDrawable.centerRadius = 30f
-                circularProgressDrawable.start()
-                Glide.with(context)
-                    .load(it)
-                    .placeholder(circularProgressDrawable)
-                    .centerCrop()
-                    .into(holder.image)
-                    .onLoadFailed(context.resources.getDrawable(R.drawable.user))
+                holder.like.isSelected = it.contains(Firebase.auth.currentUser!!.uid)
+
+                holder.likeCount.text = it.size.toString()
             }
+        }
+
+        holder.likeCount.setOnClickListener {
+            doLike()
+        }
+
+        holder.like.setOnClickListener {
+            doLike()
+        }
+        
+
+        if (dataSet[position].images.isNotEmpty())
+        {
+            PostsManager(context).setPostPic(dataSet[position].images[0], holder.image)
+        }
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, PostPage::class.java)
+            intent.putExtra("postid", dataSet[position].id)
+            context.startActivity(intent)
         }
 
 

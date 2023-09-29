@@ -29,13 +29,10 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:theme="@style/ThemeCampusDiaryBottomNavigation"
-
-
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

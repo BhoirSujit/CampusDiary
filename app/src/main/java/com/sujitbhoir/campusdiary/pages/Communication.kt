@@ -23,9 +23,12 @@ import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
 
 import com.sujitbhoir.campusdiary.databinding.FragmentCommunicationBinding
+import com.sujitbhoir.campusdiary.dataclasses.SessionData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
+import com.sujitbhoir.campusdiary.pages.communication.ChatActivity
 
 
 class Communication : Fragment() {
@@ -34,15 +37,6 @@ class Communication : Fragment() {
     private lateinit var data : UserData
     private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
-    data class SessionsInfo(
-        val sessionid : String = "",
-    val lasmes : String = "",
-    val lastime : String = "",
-    val sender : String = "",
-        val sendername : String = "",
-    val members : List<String> = listOf(),
-        val membersnames : List<String> = listOf()
-    )
 
 
     override fun onCreateView(
@@ -58,7 +52,7 @@ class Communication : Fragment() {
 
 
         //set profile pic
-        firebaseStorageHandler.setProfilePic( data.profilePicId,
+        UsersManager(container!!.context).setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -100,7 +94,8 @@ class Communication : Fragment() {
         //set data
         //get user info
 
-        val chatsArr = ArrayList<SessionsInfo>()
+        val sessionArr = ArrayList<SessionData>()
+        val requireUsersIds = ArrayList<String>()
 
         //
         val recyclerView = binding.recycleView
@@ -112,12 +107,18 @@ class Communication : Fragment() {
 
                 for (doc in it.documents)
                 {
-                    val sessionData = doc.toObject(SessionsInfo::class.java)!!
-                    chatsArr.add(sessionData)
-                    val chatListAdapter = ChatListAdapter(requireContext(),chatsArr)
-                    recyclerView.adapter = chatListAdapter
-
+                    val sessionData = doc.toObject(SessionData::class.java)!!
+                    sessionArr.add(sessionData)
+                    requireUsersIds.add(if (sessionData.members[0] == Firebase.auth.currentUser!!.uid) sessionData.members[1] else sessionData.members[0])
                 }
+
+                UsersManager(container.context).getUsersData(requireUsersIds)
+                {
+                    val chatListAdapter = ChatListAdapter(requireContext(),sessionArr, it)
+                    recyclerView.adapter = chatListAdapter
+                }
+
+
             }
             .addOnFailureListener {
                 Log.d(TAG, "failed to load")
@@ -138,7 +139,7 @@ class Communication : Fragment() {
 
 }
 
-class ChatListAdapter(private val context : Context, private val dataSet: ArrayList<Communication.SessionsInfo>) :
+class ChatListAdapter(private val context : Context, private val dataSet: ArrayList<SessionData>,val requiredUsersData : HashMap<String, UserData>) :
     RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -170,11 +171,21 @@ class ChatListAdapter(private val context : Context, private val dataSet: ArrayL
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.uname.text = dataSet[position].sendername
-        viewHolder.message.text = dataSet[position].lasmes
-        viewHolder.lmtime.text = dataSet[position].lastime
+        if (requiredUsersData.containsKey(if (dataSet[position].members[0] == Firebase.auth.currentUser!!.uid) dataSet[position].members[1] else dataSet[position].members[0]))
+        {
+            val userData = requiredUsersData[if (dataSet[position].members[0] == Firebase.auth.currentUser!!.uid) dataSet[position].members[1] else dataSet[position].members[0]]!!
+            viewHolder.uname.text = userData.name
+            UsersManager(context).setProfilePic(userData.profilePicId, viewHolder.profilepic)
+        }
 
-        FirebaseStorageHandler(context).setProfilePic(dataSet[position].members[0], viewHolder.profilepic)
+        //viewHolder.uname.text = dataSet[position].sendername
+        viewHolder.message.text = dataSet[position].lastmsg
+        viewHolder.lmtime.text = dataSet[position].lasttime.toDate().toString()
+
+        viewHolder.itemView.setOnClickListener{
+            val intent = Intent(context, ChatActivity::class.java)
+            context.startActivity(intent)
+        }
 
     }
 
