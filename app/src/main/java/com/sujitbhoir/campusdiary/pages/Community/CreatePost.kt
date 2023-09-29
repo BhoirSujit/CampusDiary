@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +25,7 @@ import com.sujitbhoir.campusdiary.databinding.ActivityCreatePostBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.PostsManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
@@ -33,12 +35,14 @@ class CreatePost : AppCompatActivity() {
     lateinit var FBFirestore : FirebaseFirestoreHandler
     private val TAG = "CreatePostTAG"
     private val commsData = ArrayList<CommunityData>()
-    private lateinit var filePaths : ArrayList<String>
+    private var filePaths  = ArrayList<String>()
+    private lateinit var postsManager : PostsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatePostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        postsManager = PostsManager(this)
 
         FBFirestore = FirebaseFirestoreHandler()
 
@@ -77,9 +81,15 @@ class CreatePost : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                     // Use the uri to load the image
-                    filePaths = it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
+                    it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
+                        .also {
+                            filePaths = it }
+
+
+                    binding.postimage1.visibility = View.GONE
 
                     val list = mutableListOf<CarouselItem>()
+
 
                     for (file in filePaths)
                     {
@@ -112,46 +122,47 @@ class CreatePost : AppCompatActivity() {
         }
 
         //post
-
-
-
         binding.btnUpdate.setOnClickListener{
-
-            val comData : CommunityData = commsData.find {
-                it.name ==  binding.dpComm.text.toString()
-            }!!
-
-            val checkedChipIds = binding.chipGroupTags.checkedChipIds
-            checkedChipIds.addAll(binding.chipGroupTags.checkedChipIds)
-
-            val tags = ArrayList<String>()
-
-            for (chip in checkedChipIds)
-            {
-                tags.add(findViewById<Chip>(chip).text.toString())
-            }
-
-
-            FBFirestore.uploadPost(
-                title = binding.tvTitle.text.toString(),
-                context = binding.tvContext.text.toString(),
-                authUName = DataHandler.getUserData(this)?.username.toString(),
-                communityName = binding.dpComm.text.toString(),
-                communityId = comData.id,
-                images = filePaths.size.toString(),
-                tags = tags
-            ) {
-                FirebaseStorageHandler(this).uploadPostMedia(filePaths, it)
-                {
-                    Toast.makeText(this, "Post uploaded successfully", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-
-            }
+            if (valid()) postPost()
         }
 
 
 
+    }
+
+    private fun valid() : Boolean
+    {
+        return  true
+    }
+
+    private fun postPost()
+    {
+
+        val comData : CommunityData = commsData.find {
+            it.name ==  binding.dpComm.text.toString()
+        }!!
+
+        val checkedChipIds = binding.chipGroupTags.checkedChipIds
+
+        val tags = ArrayList<String>()
+
+        for (chip in checkedChipIds)
+        {
+            tags.add(findViewById<Chip>(chip).text.toString())
+        }
+
+        postsManager.uploadPost(
+            title = binding.tvTitle.text.toString(),
+            context = binding.tvContext.text.toString(),
+            authUName = DataHandler.getUserData(this)?.username.toString(),
+            communityName = binding.dpComm.text.toString(),
+            communityId = comData.id,
+            images = filePaths,
+            tags = tags
+        ) {
+                Toast.makeText(this, "Post uploaded successfully", Toast.LENGTH_LONG).show()
+                finish()
+        }
     }
 
     private fun askToCreateCommunity()

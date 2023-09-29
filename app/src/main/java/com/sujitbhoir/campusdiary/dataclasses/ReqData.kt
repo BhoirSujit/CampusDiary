@@ -1,12 +1,13 @@
 package com.sujitbhoir.campusdiary.dataclasses
 
+import com.google.firebase.Timestamp
+
 data class ReqData(
+    var id : String = "",
     var sender : String = "",
-    var senderName : String = "",
-    var senderUName : String = "",
     var receiver : String = "",
-    var receiverName: String = "",
     var message : String = "",
-    var time : String = "",
-    var isRestrict : Boolean = false
+    var time : Timestamp = Timestamp.now(),
+    var status : String = ""
+
 )

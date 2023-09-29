@@ -5,18 +5,25 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextMenu
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.dynamic.SupportFragmentWrapper
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.search.SearchBar
+import com.google.android.material.search.SearchView
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.adapters.ProductsGridAdapter
 import com.sujitbhoir.campusdiary.bottomsheet.MarketplaceBottomSheet
@@ -39,17 +46,42 @@ class Marketplace : Fragment() {
     private lateinit var data : UserData
     private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
     private lateinit var marketplaceManager: MarketplaceManager
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var productsGridAdapter: ProductsGridAdapter
+    private lateinit var context: Context
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMarketplaceBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
+        context = container!!.context
 
         data = DataHandler.getUserData(requireContext())!!
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
         marketplaceManager = MarketplaceManager(requireContext())
+
+        //add chip
+        fun AddChipsInView(chipslist : Array<String>, view : ChipGroup, style : Int = com.google.android.material.R.style.Widget_Material3_Chip_Filter)
+        {
+            for (chipname in chipslist)
+            {
+                val chip = Chip(container!!.context)
+                chip.setChipDrawable(ChipDrawable.createFromAttributes(container.context, null, 0, style))
+                chip.text = chipname
+                view.addView(chip)
+            }
+        }
+        val taglist = resources.getStringArray(R.array.MarketplaceCategory)
+        AddChipsInView(taglist, binding.chipGroup)
+
+
 
         firebaseStorageHandler.setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
@@ -70,17 +102,20 @@ class Marketplace : Fragment() {
             })
 
         //recycle view
-        val recyclerView = binding.recycleView
+        recyclerView = binding.recycleView
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         marketplaceManager.getProductsData()
         {
 
-            val productListAdapter = ProductsGridAdapter(requireContext(),it)
-            recyclerView.adapter = productListAdapter
+            productsGridAdapter = ProductsGridAdapter(context,it)
+            recyclerView.adapter = productsGridAdapter
+
+
 
 
         }
+
 
         //topbar
         binding.topBar.setOnMenuItemClickListener {
@@ -108,32 +143,60 @@ class Marketplace : Fragment() {
 
 
 
+
+
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.explore_top_menu, menu)
-        super.onCreateOptionsMenu(menu,inflater)
-        val search = binding.topBar.menu.getItem(R.id.search)
-        //binding.searchView.setupWithSearchBar(search as SearchBar)
-//        val searchView: SearchView = search.actionView as SearchView
-//
-//
-//        searchView.setOnQueryTextListener(object : OnQueryTextListener() {
-//            fun onQueryTextSubmit(query: String?): Boolean {
-//                return false
-//            }
-//
-//            fun onQueryTextChange(newText: String?): Boolean {
-//                // inside on query text change method we are
-//                // calling a method to filter our recycler view.
-//                filter(newText)
-//                return false
-//            }
-//        })
 
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
 
+        Log.d(TAG, "you menu entered")
+        val search = menu.findItem(R.id.search)
+        val searchView  = search.actionView as androidx.appcompat.widget.SearchView
+
+        searchView.setOnQueryTextListener(object : OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d(TAG, "you entered")
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Log.d(TAG, "you  1 entered")
+                return false
+            }
+        })
+
+        activity?.menuInflater?.inflate(R.menu.marketplace_top_menu, menu);
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        Log.d(TAG, "you menu entered")
+        val search = menu.findItem(R.id.search)
+        val searchView  = search.actionView as androidx.appcompat.widget.SearchView
+
+        searchView.setOnQueryTextListener(object : OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d(TAG, "you entered")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Log.d(TAG, "you  1 entered")
+                return true
+            }
+        })
+
+        activity?.menuInflater?.inflate(R.menu.marketplace_top_menu, menu);
+    }
+
+
 
 
 }

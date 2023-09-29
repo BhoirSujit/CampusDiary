@@ -27,6 +27,7 @@ import com.sujitbhoir.campusdiary.databinding.ActivityEditProfileBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -38,18 +39,24 @@ class EditProfile : AppCompatActivity() {
 
     private lateinit var binding : ActivityEditProfileBinding
     private val TAG = "editprofileTAG"
-    private lateinit var storage : FirebaseStorage
-    private lateinit var auth : FirebaseAuth
+
     private lateinit var data : UserData
     private lateinit var db : FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var usersManager: UsersManager
 
-    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
-    private lateinit var firebaseFirestoreHandler: FirebaseFirestoreHandler
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //initialize
+        usersManager = UsersManager(this)
+        data = usersManager.getMyData()!!
+        db = Firebase.firestore
+        auth = Firebase.auth
 
         //back
         binding.toolbar1.setNavigationIcon(R.drawable.arrow_back_24px)
@@ -57,13 +64,9 @@ class EditProfile : AppCompatActivity() {
             finish()
         }
 
-        //initialize
-        data = DataHandler.getUserData(baseContext)!!
-        db = Firebase.firestore
-        auth = Firebase.auth
-        storage = Firebase.storage
-        firebaseStorageHandler = FirebaseStorageHandler(this)
-        firebaseFirestoreHandler = FirebaseFirestoreHandler()
+
+
+
 
         //set fields
         binding.tvFname.text = Editable.Factory.getInstance().newEditable(data.name)
@@ -78,7 +81,7 @@ class EditProfile : AppCompatActivity() {
 
 
         //set image
-        firebaseStorageHandler.setProfilePic(DataHandler.getUserData(baseContext)!!.profilePicId, binding.profilepic)
+        usersManager.setProfilePic(data.profilePicId, binding.profilepic)
 
 
         //upload pic
@@ -88,24 +91,20 @@ class EditProfile : AppCompatActivity() {
             {
                 val uri = it.data?.data!!
 
-                firebaseStorageHandler.uploadProfilePic(uri) {
+                usersManager.uploadProfilePic(auth.currentUser!!.uid,uri) {
                     //save profilepicid
-                    firebaseFirestoreHandler.updateProfilePicId(auth.currentUser!!.uid, it)
+                    Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
+                    usersManager.updateUserData(this)
                     {
-                        Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
-                        firebaseStorageHandler.setProfilePic(it, binding.profilepic)
+                        usersManager.setProfilePic(it, binding.profilepic)
                     }
+
+
                 }
             }
         }
 
-
-
-
         binding.btnEditprofilepic.setOnClickListener {
-//            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-//            resultActivity.launch(intent)
-
             resultActivity.launch(
                 FilePicker.Builder(this)
                     .pickMediaBuild(
@@ -116,6 +115,19 @@ class EditProfile : AppCompatActivity() {
                         )
                     )
             )
+        }
+
+        binding.btnRemove.setOnClickListener {
+            //save profilepicid
+            usersManager.removeProfilePic(auth.currentUser!!.uid)
+            {
+                Toast.makeText(this, "Removed Successfully", Toast.LENGTH_LONG).show()
+                usersManager.updateUserData(this)
+                {
+                    usersManager.setProfilePic("", binding.profilepic)
+                }
+
+            }
         }
 
         //discard
@@ -139,9 +151,12 @@ class EditProfile : AppCompatActivity() {
                 .set(userinfo, SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-                    DataHandler.updateUserData(baseContext)
-                    Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
-                    finish()
+                    usersManager.updateUserData(this)
+                    {
+                        Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+
                 }
                 .addOnFailureListener {
                     Log.w(TAG, "Error adding document", it)
@@ -149,68 +164,4 @@ class EditProfile : AppCompatActivity() {
         }
 
     }
-
-//    private fun uploadProfilePic(uri : Uri)
-//    {
-//        //compress file
-//        var bitmap: Bitmap? = null
-//        try {
-//            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//        val baos = ByteArrayOutputStream()
-//        bitmap?.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-//
-//        val data = baos.toByteArray()
-//
-//        val timestamp = Timestamp.now().seconds
-//        val profilepicname = Firebase.auth.currentUser!!.uid
-//
-//        val ref = storage.reference.child("userspic/${profilepicname}.png")
-//        ref.putBytes(data)
-//            .addOnSuccessListener {
-//                Log.d(TAG, "successfull upload")
-//
-//
-//                //load pitcher
-////                val requestOptions = RequestOptions()
-////                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-////                    .circleCrop()
-////                    .override(100, 100)
-////
-////                Glide.with(this)
-////                    .load(DataHandler().getProfilePic(this, profilepicname))
-////                    .apply(requestOptions)
-////                    .into(binding.profilepic)
-////                    .onLoadFailed(resources.getDrawable(R.drawable.user))
-//
-//                DataHandler().setProfilePic(this, profilepicname, binding.profilepic)
-//
-//                Toast.makeText(baseContext, "Uploaded Successfully", Toast.LENGTH_LONG).show()
-//
-//            }
-//            .addOnFailureListener{
-//                Log.d(TAG, "unsuccessfull upload")
-//            }
-//    }
-//
-//    private fun saveProfilePic(profilepicname : String)
-//    {
-//        val ref = storage.reference.child("userspic/${profilepicname}.png")
-//        val file = File(baseContext.filesDir, "$profilepicname.png")
-//        ref.getFile(file)
-//            .addOnSuccessListener {
-//                Log.d(TAG, "successfull saved")
-//
-//                DataHandler().setProfilePic(this, auth.currentUser!!.uid, binding.profilepic)
-//
-//            }
-//            .addOnFailureListener{
-//                Log.d(TAG, "unsuccessfull saved")
-//                Toast.makeText(baseContext, "Something went wrong", Toast.LENGTH_LONG).show()
-//            }
-//    }
-
-
 }

@@ -18,7 +18,7 @@ import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
 import com.sujitbhoir.campusdiary.pages.marketplace.ProductPage
 import org.w3c.dom.Text
 
-class ProductsGridAdapter(private val context : Context, private val dataSet: ArrayList<ProductData>) :
+class ProductsGridAdapter(private val context : Context,val dataSet: ArrayList<ProductData>) :
     RecyclerView.Adapter<ProductsGridAdapter.ViewHolder>(){
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -37,9 +37,6 @@ class MainActivity : AppCompatActivity() {
         val FCommunication = Communication()
         val FMarketplace = Marketplace()
 
-
-
-
         //set default
         setCurrentFragment(Fhome)
 
@@ -71,38 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         DataHandler.updateUserData(baseContext)
 
-//        //get user info
-//        db.collection("users").document(auth.currentUser!!.uid)
-//            .get()
-//            .addOnSuccessListener {
-//
-//                Log.d(TAG, "data are : ${it.data}")
-//                if (it != null && it.exists()) {
-//                    //setting data
-//                    val userData = it.toObject(UserData::class.java)
-//                    userData?.uid = auth.currentUser!!.uid
-//
-//                    val gson = Gson()
-//                    val json = gson.toJson(userData)
-//                    val fileContents = json.toByteArray()
-//                    val file = File(baseContext.filesDir,"user_data.json")
-//                    try {
-//                        FileOutputStream(file).use {
-//                            it.write(fileContents)
-//                        }
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                    }
-//
-//                    Log.d(TAG, "main TAG , fname : ${userData}")
-//                }
-//            }
-//            .addOnFailureListener {
-//                Log.d(TAG, "failed to load")
-//            }
-
-
-
+        Firebase.auth.currentUser
 
     }
 

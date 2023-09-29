@@ -29,4 +29,21 @@
         <item>Book</item>
     </string-array>
 
+    <string-array name="MarketplaceCategory">
+        <item>books</item>
+        <item>common Stuff</item>
+        <item>electronics</item>
+        <item>IT Gadgets</item>
+        <item>cloths</item>
+        <item>Arts &amp; crafts</item>
+        <item>sport</item>
+        <item>other</item>
+    </string-array>
+
+    <string-array name="CommunityCategory">
+        <item>Nature</item>
+        <item>Physics</item>
+        <item>Technology</item>
+    </string-array>
+
 </resources>

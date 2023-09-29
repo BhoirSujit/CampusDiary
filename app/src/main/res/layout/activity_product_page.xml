@@ -49,10 +49,9 @@
 
             <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                 android:id="@+id/carousel"
-                app:topShadowAlpha="0"
-                app:bottomShadowAlpha="0"
                 android:layout_width="match_parent"
-                android:layout_height="256dp"
+                android:layout_height="512dp"
+                app:bottomShadowAlpha="0"
                 app:imagePlaceholder="@mipmap/ic_launcher_new_round"
                 app:imageScaleType="centerInside"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +59,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:showCaption="false"
-                app:showNavigationButtons="false">
+                app:showNavigationButtons="false"
+                app:topShadowAlpha="0">
 
             </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
 
@@ -72,24 +72,23 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Product name"
-                android:textSize="20dp"
+                android:textSize="24dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
             <TextView
                 android:id="@+id/tv_prize"
-                android:layout_width="match_parent"
-
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="$100"
-                android:textSize="18dp"
+                android:text="100"
+                android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintTop_toBottomOf="@+id/divider22" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -99,8 +98,7 @@
                 android:layout_marginTop="4dp"
                 android:src="@drawable/location_on_24px"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_prize"
-                app:tint="?colorPrimary" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <TextView
                 android:id="@+id/tv_campus"
@@ -123,14 +121,16 @@
                 app:layout_constraintTop_toBottomOf="@id/imageView3" />
 
             <TextView
+
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Details"
+                android:textSize="18dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView7"
                 app:layout_constraintTop_toTopOf="@+id/divider19" />
 
             <TextView
@@ -138,6 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="details"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -158,11 +159,12 @@
                 android:id="@+id/textView171"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:textSize="18dp"
                 android:text="Seller Information"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView9"
                 app:layout_constraintTop_toTopOf="@+id/divider191" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -179,8 +181,8 @@
 
                 <ImageView
                     android:id="@+id/iv_profile_pic"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/user"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -188,12 +190,14 @@
 
                 <TextView
                     android:id="@+id/tv_uname"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="18dp"
                     android:text="Name"
                     android:textSize="16dp"
 
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_profile_pic"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
                     app:layout_constraintTop_toTopOf="@+id/iv_profile_pic" />
 
@@ -216,9 +220,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Request"
-                    android:text="Hi, i am interested to buy this product."
-                    android:inputType="text"
-                    android:maxLength="60" />
+                    android:inputType="text|textMultiLine"
+                    android:maxLength="60"
+                    android:text="Hi, i am interested to buy this product." />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -230,8 +234,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:backgroundTint="#009688"
+                android:backgroundTint="#075e54"
                 android:text="Whatsapp"
+                android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout63" />
 
@@ -277,7 +282,44 @@
 
                 app:layout_constraintTop_toBottomOf="@id/textView1781" />
 
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView17"
+                app:srcCompat="@drawable/info_24px" />
 
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_prize"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/carousel"
+                app:srcCompat="@drawable/currency_rupee_24px" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView171"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView171"
+                app:srcCompat="@drawable/badge_24px" />
+
+            <View
+                android:id="@+id/divider22"
+                android:layout_width="409dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/carousel" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,8 +47,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+
             <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                 app:showNavigationButtons="false"
+                app:bottomShadowAlpha="0"
+                app:topShadowAlpha="0"
                 app:imageScaleType="centerInside"
                 app:imagePlaceholder="@mipmap/ic_launcher_new_round"
                 app:showCaption="false"
@@ -59,6 +63,16 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/postimage1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/image_upload_rafiki"
+                app:layout_constraintBottom_toBottomOf="@+id/carousel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/carousel" />
 
 
             <com.google.android.material.textfield.TextInputLayout
