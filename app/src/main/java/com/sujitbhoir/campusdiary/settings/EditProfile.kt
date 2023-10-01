@@ -1,5 +1,6 @@
 package com.sujitbhoir.campusdiary.settings
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -22,6 +24,7 @@ import com.google.firebase.storage.ktx.storage
 import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
 import com.nareshchocha.filepickerlibrary.models.PickMediaType
 import com.nareshchocha.filepickerlibrary.ui.FilePicker
+import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityEditProfileBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
@@ -128,6 +131,13 @@ class EditProfile : AppCompatActivity() {
                 }
 
             }
+        }
+
+        //view image
+        binding.profilepic.setOnClickListener {
+            val intent = Intent(this, ImageViewerActivity::class.java)
+            intent.putExtra("image", usersManager.getProfilePicFile(data.profilePicId) )
+            startActivity(intent)
         }
 
         //discard

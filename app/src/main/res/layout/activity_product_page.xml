@@ -18,18 +18,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar1"
-            style="@style/Widget.Material3.AppBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:title="Product" />
-
-        <View
-            android:id="@+id/divider13"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+            android:layout_height="wrap_content"/>
+
+
 
 
 
@@ -47,10 +40,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                 android:id="@+id/carousel"
+                style="@style/ShapeAppearance.Material3.Corner.ExtraLarge"
                 android:layout_width="match_parent"
-                android:layout_height="512dp"
+                android:layout_height="456dp"
                 app:bottomShadowAlpha="0"
                 app:imagePlaceholder="@mipmap/ic_launcher_new_round"
                 app:imageScaleType="centerInside"
@@ -69,36 +64,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Product name"
-                android:textSize="24dp"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+                app:layout_constraintTop_toBottomOf="@+id/carousel" />
 
             <TextView
                 android:id="@+id/tv_prize"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="100"
-                android:textSize="20dp"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="?colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView8"
-                app:layout_constraintTop_toBottomOf="@+id/divider22" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/location_on_24px"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
             <TextView
                 android:id="@+id/tv_campus"
@@ -106,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="unknown"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
                 app:layout_constraintTop_toTopOf="@+id/imageView3" />
@@ -114,11 +109,13 @@
                 android:id="@+id/divider19"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageView3" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_prize" />
 
             <TextView
 
@@ -126,10 +123,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="Details"
-                android:textSize="18dp"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"
                 app:layout_constraintTop_toTopOf="@+id/divider19" />
 
@@ -138,18 +134,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 android:text="details"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView13" />
 
             <View
                 android:id="@+id/divider191"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -161,9 +160,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:textSize="18dp"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:text="Seller Information"
-                android:textStyle="bold"
+
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
                 app:layout_constraintTop_toTopOf="@+id/divider191" />
 
@@ -195,6 +194,7 @@
                     android:layout_marginStart="18dp"
                     android:text="Name"
                     android:textSize="16dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
 
                     app:layout_constraintBottom_toBottomOf="@+id/iv_profile_pic"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -255,7 +255,9 @@
                 android:id="@+id/divider1911"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -267,17 +269,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="suggested"
-                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:text="Suggested for you"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/divider1911" />
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout3" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycle_view_suggested"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:overScrollMode="never"
 
                 app:layout_constraintTop_toBottomOf="@id/textView1781" />
@@ -285,41 +287,77 @@
             <ImageView
                 android:id="@+id/imageView7"
                 android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView17"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView17"
                 app:srcCompat="@drawable/info_24px" />
 
             <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_prize"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel"
-                app:srcCompat="@drawable/currency_rupee_24px" />
-
-            <ImageView
                 android:id="@+id/imageView9"
                 android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView171"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView171"
                 app:srcCompat="@drawable/badge_24px" />
 
-            <View
-                android:id="@+id/divider22"
-                android:layout_width="409dp"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="4dp"
+                android:padding="1dp"
+                app:layout_constraintStart_toStartOf="@+id/imageView3"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                app:srcCompat="@drawable/schedule_24px" />
+
+            <TextView
+                android:id="@+id/tv_time_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="time"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView12"
+                app:layout_constraintStart_toEndOf="@+id/imageView12"
+                app:layout_constraintTop_toTopOf="@+id/imageView12" />
+
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="@+id/imageView12"
+                app:layout_constraintTop_toBottomOf="@+id/imageView12"
+                app:srcCompat="@drawable/production_quantity_limits_24px" />
+
+            <TextView
+                android:id="@+id/tv_prod_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="new"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView13"
+                app:layout_constraintStart_toEndOf="@+id/imageView13"
+                app:layout_constraintTop_toTopOf="@+id/imageView13" />
+
+            <FrameLayout
+                android:id="@+id/frameLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+                app:layout_constraintTop_toBottomOf="@+id/divider1911">
+
+                <include layout="@layout/feedback_view" />
+
+            </FrameLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

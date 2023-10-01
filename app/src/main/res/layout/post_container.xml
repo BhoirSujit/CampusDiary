@@ -10,61 +10,52 @@
     <ImageView
 
         android:id="@+id/iv_com_pic"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/user"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_post_title" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/tv_cname"
+        style="@style/TextAppearance.Material3.BodyMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Name"
-
-        android:textSize="14sp"
-
         app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
         app:layout_constraintStart_toEndOf="@+id/iv_com_pic"
         app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <FrameLayout
         android:id="@+id/post_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="10dp"
-
         android:layout_marginEnd="16dp"
-        app:circularflow_radiusInDP="10dp"
-
-        app:layout_constrainedHeight="true"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="198dp"
-
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent" />
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
 
-    <com.google.android.material.textview.MaterialTextView
+
+    />
+
+    <TextView
         android:id="@+id/tv_post_title"
-
+        style="@style/TextAppearance.Material3.TitleMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:maxLines="3"
-
         android:text="Title"
-        android:textSize="18sp"
-        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_image" />
@@ -81,7 +72,7 @@
         android:id="@+id/divider17"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +84,7 @@
         android:id="@+id/btn_like"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_cname"
         app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
         app:layout_constraintTop_toTopOf="@+id/tv_cname"

@@ -20,11 +20,10 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar1"
             style="@style/Widget.Material3.AppBarLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            android:elevation="10dp"
-            app:title="Chat" />
+            />
 
         <View
             android:id="@+id/divider13"
@@ -39,6 +38,7 @@
         android:id="@+id/recycle_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/linearLayout5"
-        style="@style/Widget.Material3.CardView.Outlined"
+        style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -56,7 +56,7 @@
 
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView5"
+        app:layout_constraintEnd_toStartOf="@+id/btnSend"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
@@ -64,23 +64,25 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="0dp">
 
-            <ImageButton
+            <Button
+
                 android:id="@+id/btnmedia"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-
-                android:src="@drawable/perm_media_24px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:drawableEnd="@drawable/perm_media_24px"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <EditText
-
+                style="@style/Widget.Material3.TextInputEditText.OutlinedBox.Dense"
                 android:id="@+id/messagebox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textAutoCorrect"
+                android:hint="send a message"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </LinearLayout>
@@ -88,12 +90,15 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <ImageButton
-        android:id="@+id/imageView5"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+    <Button
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/send_24px"
+
+        android:drawableEnd="@drawable/send_24px"
+        android:drawableTint="?colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout5" />
