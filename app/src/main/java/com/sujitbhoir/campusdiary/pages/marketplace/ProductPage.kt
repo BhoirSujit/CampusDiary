@@ -43,7 +43,7 @@ class ProductPage : AppCompatActivity() {
 
         //back
         binding.toolbar1.setNavigationIcon(R.drawable.arrow_back_24px)
-        binding.toolbar1.setNavigationOnClickListener {
+        binding.toolbar1.setOnClickListener {
             finish()
         }
 
@@ -58,14 +58,16 @@ class ProductPage : AppCompatActivity() {
         //set data
         MarketplaceManager(this).getProductData(productId) {
             binding.tvName.text = it.name
-            binding.tvPrize.text = it.price
+            binding.tvPrize.text = "Rs "+it.price
             binding.tvCampus.text = it.campus
-            binding.tvDetails.text = "Posted On : ${getDate(it.uploadDate.toLong())}\nCondition : ${it.condition}\n${it.details}"
+            binding.tvDetails.text = it.details
+            binding.tvProdQuality.text = it.condition
+            binding.tvTimeUpload.text = getDate(it.uploadDate.toLong())
             binding.tvUname.text = it.sellerName
             whatsappno = it.contactWhatsapp
             uploaddate = getDate(it.uploadDate.toLong())
             sellerId = it.sellerId
-            FirebaseStorageHandler(this).setProfilePic(it.sellerPic, binding.ivProfilePic)
+            UsersManager(this).setProfilePic(it.sellerPic, binding.ivProfilePic)
             MarketplaceManager(this).setCarouselImages(it.images, binding.carousel, lifecycle = lifecycle)
             showSuggested(it.sellerId)
         }

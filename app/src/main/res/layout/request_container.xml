@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Name"
-        android:textSize="16dp"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
 
         app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
         app:layout_constraintTop_toTopOf="@+id/iv_profile_pic" />
@@ -33,6 +33,7 @@
         android:layout_marginStart="16dp"
         android:maxLines="1"
         android:text="status"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         app:layout_constraintBottom_toBottomOf="@+id/iv_profile_pic"
         app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
         app:layout_constraintTop_toBottomOf="@+id/tv_uname" />
@@ -42,9 +43,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:text="message"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_profile_pic" />
@@ -81,11 +83,11 @@
 
     <View
         android:id="@+id/divider14"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="1dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

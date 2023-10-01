@@ -1,5 +1,6 @@
 package com.sujitbhoir.campusdiary.pages.Community
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityPostPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.PostsManager
+import com.sujitbhoir.campusdiary.helperclass.TimeFormater
 
 class PostPage : AppCompatActivity() {
 
@@ -16,6 +18,8 @@ class PostPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPostPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
 
         val postid = intent.getStringExtra("postid")!!
         PostsManager(this).getPostData(postid)
@@ -27,6 +31,7 @@ class PostPage : AppCompatActivity() {
 
 
     }
+
 
     private fun setup()
     {
@@ -41,13 +46,13 @@ class PostPage : AppCompatActivity() {
             binding.carousel.visibility = View.GONE
         }
 
-        //set DAta
+        //set Data
         binding.tvMembers.text = data.authUName
         binding.tvName.text = data.title
         binding.tvLikeCount.text = data.likes.size.toString()
         binding.tvCname.text = data.communityName
         binding.tvdes.text = data.context
-        binding.tvDate.text = data.creationDate
+        binding.tvDate.text = "posted on ${TimeFormater().getFormatedTime(data.creationDate.toLong())}"
 
 
 

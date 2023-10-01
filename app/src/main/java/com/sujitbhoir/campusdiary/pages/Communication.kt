@@ -28,6 +28,7 @@ import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
+import com.sujitbhoir.campusdiary.helperclass.TimeFormater
 import com.sujitbhoir.campusdiary.pages.communication.ChatActivity
 
 
@@ -87,6 +88,7 @@ class Communication : Fragment() {
         //float action button
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent(container?.context, CreateChat::class.java)
+
             startActivity(intent)
         }
 
@@ -114,7 +116,7 @@ class Communication : Fragment() {
 
                 UsersManager(container.context).getUsersData(requireUsersIds)
                 {
-                    val chatListAdapter = ChatListAdapter(requireContext(),sessionArr, it)
+                    val chatListAdapter = ChatListAdapter(container.context,sessionArr, it)
                     recyclerView.adapter = chatListAdapter
                 }
 
@@ -139,7 +141,7 @@ class Communication : Fragment() {
 
 }
 
-class ChatListAdapter(private val context : Context, private val dataSet: ArrayList<SessionData>,val requiredUsersData : HashMap<String, UserData>) :
+private class ChatListAdapter(private val context : Context, private val dataSet: ArrayList<SessionData>,val requiredUsersData : HashMap<String, UserData>) :
     RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -180,10 +182,10 @@ class ChatListAdapter(private val context : Context, private val dataSet: ArrayL
 
         //viewHolder.uname.text = dataSet[position].sendername
         viewHolder.message.text = dataSet[position].lastmsg
-        viewHolder.lmtime.text = dataSet[position].lasttime.toDate().toString()
-
+        viewHolder.lmtime.text = TimeFormater().getFormatedTime(dataSet[position].lasttime)
         viewHolder.itemView.setOnClickListener{
             val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra("sessionid", dataSet[position].id)
             context.startActivity(intent)
         }
 

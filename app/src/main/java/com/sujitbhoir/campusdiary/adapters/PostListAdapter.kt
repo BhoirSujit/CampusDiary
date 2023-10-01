@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -21,6 +23,7 @@ import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.PostsManager
+import com.sujitbhoir.campusdiary.helperclass.TimeFormater
 import com.sujitbhoir.campusdiary.pages.Communication
 import com.sujitbhoir.campusdiary.pages.Community.PostPage
 import org.w3c.dom.Text
@@ -38,7 +41,7 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
         val title : TextView
         val like : ImageView
         val likeCount : TextView
-        val image : ImageView
+        val imagecontainer : FrameLayout
 
         init {
             // Define click listener for the ViewHolder's View
@@ -49,7 +52,7 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
 
             like = view.findViewById(R.id.btn_like)
             likeCount = view.findViewById(R.id.tv_like_count)
-            image = view.findViewById(R.id.post_image)
+            imagecontainer = view.findViewById(R.id.post_image)
 
         }
     }
@@ -69,7 +72,7 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: PostListAdapter.ViewHolder, position: Int) {
-        holder.comName.text = "${dataSet[position].communityName} - ${dataSet[position].creationDate}"
+        holder.comName.text = "${dataSet[position].communityName} . ${TimeFormater().getFormatedTime(dataSet[position].creationDate.toLong())}"
 
         holder.title.text = dataSet[position].title
         FirebaseStorageHandler(context).setCommunityPic(dataSet[position].profilePicId, holder.comPic)
@@ -99,7 +102,7 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
 
         if (dataSet[position].images.isNotEmpty())
         {
-            PostsManager(context).setPostPic(dataSet[position].images[0], holder.image)
+            PostsManager(context).setPostPicShapable(dataSet[position].images[0], holder.imagecontainer)
         }
 
         holder.itemView.setOnClickListener {

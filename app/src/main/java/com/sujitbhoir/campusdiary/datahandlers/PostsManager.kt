@@ -3,12 +3,32 @@ package com.sujitbhoir.campusdiary.datahandlers
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.shapes.Shape
+import android.media.ThumbnailUtils
 import android.net.wifi.WifiManager.SubsystemRestartTrackingCallback
+import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.LinearLayout.LAYER_TYPE_NONE
+import android.widget.LinearLayout.LAYOUT_DIRECTION_RTL
+import android.widget.LinearLayout.LayoutParams
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.MaterialShapeUtils
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.android.material.shape.Shapeable
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback.ShapeProvider
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
@@ -25,6 +45,9 @@ import java.io.File
 import java.io.IOException
 import java.util.Date
 import java.util.UUID
+import kotlin.coroutines.coroutineContext
+import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 class PostsManager(private val context: Context) {
 
@@ -45,6 +68,13 @@ class PostsManager(private val context: Context) {
             {
                 it.mkdir()
             }
+        }
+    }
+
+    companion object {
+        fun getDpfromFloat(context : Context, value : Float) : Int
+        {
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,  value,  context.resources.displayMetrics).toInt()
         }
     }
 
@@ -149,6 +179,90 @@ class PostsManager(private val context: Context) {
         }
     }
 
+    fun setPostPicShapable(ID : String,  image : FrameLayout)
+    {
+
+        var file = getStorageFile(ID)
+        val ref = getStorageRef(ID)
+
+        fun load()
+        {
+            val uri = file.toUri()
+            val option = BitmapFactory.Options()
+            option.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(file.absolutePath, option)
+
+            var bitmap: Bitmap? = null
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            val h = option.outHeight
+            val w = option.outWidth
+
+            val ratio  = (bitmap!!.width.toDouble().div(bitmap.height) * 100).toInt()
+            Log.d(TAG, "ration are : $h , $w,  $ratio")
+
+            val newimg = ShapeableImageView(context)
+            newimg.layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, when
+            {
+                h > w -> getDpfromFloat(context, 256F)
+
+                else -> TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,  198F,  context.resources.displayMetrics).toInt()
+            })
+
+
+
+
+
+            val shapeAppearanceModel = ShapeAppearanceModel()
+                        .toBuilder()
+                        .setAllCorners(CornerFamily.ROUNDED, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,  12F,  context.resources.displayMetrics))
+                        .build();
+
+            newimg.shapeAppearanceModel = shapeAppearanceModel
+
+
+
+            image.addView(newimg)
+
+
+            Glide.with(context)
+                .load(bitmap)
+                .centerCrop()
+                .placeholder(R.drawable.college_campus_rafiki)
+                .into(newimg)
+
+
+
+
+        }
+
+        if (file.exists())
+        {
+            //load pitcher
+            load()
+
+        }
+        else
+        {
+            ref.getFile(file)
+                .addOnSuccessListener {
+                    Log.d(TAG, "successfull saved in storage")
+                    file = getStorageFile(ID)
+
+                    //load pitcher
+                    load()
+
+                }
+                .addOnFailureListener{
+                    Log.d(TAG, "unsuccessfully saved")
+                }
+        }
+    }
+
     fun setPostPic(ID : String,  image : ImageView)
     {
 
@@ -159,10 +273,11 @@ class PostsManager(private val context: Context) {
         {
             //load pitcher
             Glide.with(context)
-                .load(ref)
+                .load(file)
                 .centerCrop()
+                .placeholder(R.drawable.college_campus_rafiki)
                 .into(image)
-                .onLoadFailed(context.resources.getDrawable(R.drawable.user))
+
 
         }
         else
@@ -176,8 +291,8 @@ class PostsManager(private val context: Context) {
                     Glide.with(context)
                         .load(file)
                         .centerCrop()
+                        .placeholder(R.drawable.college_campus_rafiki)
                         .into(image)
-                        .onLoadFailed(context.resources.getDrawable(R.drawable.user))
 
                 }
                 .addOnFailureListener{

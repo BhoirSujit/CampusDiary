@@ -34,7 +34,7 @@ import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
-import com.sujitbhoir.campusdiary.pages.ChatListAdapter
+
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
 import com.sujitbhoir.campusdiary.pages.Profile
 

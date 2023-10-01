@@ -26,6 +26,9 @@
         android:theme="@style/Theme.CampusDiary"
         tools:targetApi="31">
         <activity
+            android:name=".ImageViewerActivity"
+            android:exported="false" />
+        <activity
             android:name=".pages.communication.ChatActivity"
             android:exported="false" />
         <activity

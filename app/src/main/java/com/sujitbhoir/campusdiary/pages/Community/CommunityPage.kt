@@ -14,10 +14,12 @@ import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.adapters.PostListAdapter
+import com.sujitbhoir.campusdiary.bottomsheet.UserBottomSheet
 import com.sujitbhoir.campusdiary.databinding.ActivityCommunityPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 class CommunityPage : AppCompatActivity() {
@@ -104,11 +106,17 @@ class CommunityPage : AppCompatActivity() {
             //load post
             loadPost(it.id)
 
-
-
-            binding.contactAdmin.setOnClickListener {
-
+            UsersManager(this).getUserData(it.admin)
+            {userData ->
+                binding.contactAdmin.setOnClickListener {
+                    val userBottomSheet = UserBottomSheet(userData)
+                    userBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+                }
             }
+
+
+
+
         }
 
 

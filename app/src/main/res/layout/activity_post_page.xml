@@ -13,39 +13,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/btn_like"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_date"
-                app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
-                app:srcCompat="@drawable/favorite_24px"
-                />
-
-            <TextView
-                android:id="@+id/tv_like_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:layout_marginEnd="16dp"
-
-                android:text="100"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_like"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_like" />
-        </LinearLayout>
-
-
-
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -62,16 +30,11 @@
             style="@style/Widget.Material3.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="10dp"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:title="Post" />
+            app:title="post" />
 
 
-        <View
-            android:id="@+id/divider13"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -79,7 +42,6 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +50,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="1000dp">
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/btn_option"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_like_count"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_like_count"
+                app:srcCompat="@drawable/more_vert_24px" />
 
 
             <org.imaginativeworld.whynotimagecarousel.ImageCarousel
@@ -96,20 +68,18 @@
                 android:id="@+id/carousel"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 app:bottomShadowAlpha="0"
-                app:layout_constraintDimensionRatio="H,4:3"
                 app:imagePlaceholder="@mipmap/ic_launcher_new_round"
                 app:imageScaleType="centerInside"
+                app:layout_constraintDimensionRatio="H,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
                 app:showCaption="false"
                 app:showNavigationButtons="false"
-                app:topShadowAlpha="0">
-
-
-            </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
+                app:topShadowAlpha="0"/>
 
             <TextView
                 android:id="@+id/tv_name"
@@ -119,11 +89,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="Title"
-                android:textSize="24dp"
-                android:textStyle="normal"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+
 
 
 
@@ -132,25 +102,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="16/8/2023"
+                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvdes">
+
+                <include layout="@layout/feedback_view" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tvdes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="context"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
+
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,8 +146,8 @@
 
                 <ImageView
                     android:id="@+id/iv_com_pic"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/user"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -174,9 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Name"
-
-                    android:textSize="16dp"
-                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     app:layout_constraintStart_toEndOf="@+id/iv_com_pic"
                     app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
 
@@ -185,6 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="members"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
                     app:layout_constraintStart_toStartOf="@+id/tv_cname"
                     app:layout_constraintTop_toBottomOf="@+id/tv_cname" />
@@ -193,7 +176,7 @@
                     android:id="@+id/btn_com_joinedit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="join"
+                    android:text="Follow"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
@@ -201,7 +184,26 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/btn_like"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+                app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
+                app:layout_constraintTop_toTopOf="@+id/tv_date"
+                app:srcCompat="@drawable/favorite_24px" />
 
+            <TextView
+                android:id="@+id/tv_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="16dp"
+                android:text="100"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_like"
+                app:layout_constraintEnd_toStartOf="@+id/btn_option"
+                app:layout_constraintTop_toTopOf="@+id/btn_like" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

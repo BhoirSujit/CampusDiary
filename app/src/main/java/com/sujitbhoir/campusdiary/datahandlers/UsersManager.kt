@@ -43,7 +43,7 @@ class UsersManager(private val context: Context) {
     private val userRef = db.collection("users")
 
     private fun uniqueId() : String = (Timestamp.now().seconds + UUID.randomUUID().hashCode()).toString()
-    private fun getProfilePicFile(profilePicId : String) : File = File(context.filesDir.absolutePath+ File.separator + "ProfilePictures", "$profilePicId.jpg")
+    fun getProfilePicFile(profilePicId : String) : File = File(context.filesDir.absolutePath+ File.separator + "ProfilePictures", "$profilePicId.jpg")
     private fun getProfilePicRef(profilePicId : String) : StorageReference = storage.reference.child("ProfilePictures/$profilePicId.jpg")
 
     private fun getStorageRef(id : String) = storage.reference.child("ProfilePictures/$id.jpg")
@@ -253,6 +253,8 @@ class UsersManager(private val context: Context) {
 
 
     }
+
+
 
     fun setProfilePic(profilePicID : String,  image : ImageView)
     {
