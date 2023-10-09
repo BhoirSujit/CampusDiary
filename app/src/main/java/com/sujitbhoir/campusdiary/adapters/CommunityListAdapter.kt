@@ -21,6 +21,13 @@ import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 
 class CommunityListAdapter(val context : Context, private val dataSet: ArrayList<CommunityData>) :
     RecyclerView.Adapter<CommunityListAdapter.ViewHolder>() {
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val comname: TextView

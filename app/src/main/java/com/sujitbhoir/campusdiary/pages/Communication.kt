@@ -110,7 +110,8 @@ class Communication : Fragment() {
                 for (doc in it.documents)
                 {
                     val sessionData = doc.toObject(SessionData::class.java)!!
-                    sessionArr.add(sessionData)
+                    if (!sessionData.exitmebers.contains( auth.currentUser!!.uid))
+                        sessionArr.add(sessionData)
                     requireUsersIds.add(if (sessionData.members[0] == Firebase.auth.currentUser!!.uid) sessionData.members[1] else sessionData.members[0])
                 }
 

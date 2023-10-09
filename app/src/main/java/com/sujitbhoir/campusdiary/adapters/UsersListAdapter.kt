@@ -16,6 +16,14 @@ import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 class UsersListAdapter(val context : Context, val dataSet: ArrayList<UserData>, val customClickListener: (ViewHolder, Int) -> Unit) :
     RecyclerView.Adapter<UsersListAdapter.ViewHolder>() {
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val uname: TextView
         val profilepic : ImageView
@@ -45,9 +53,8 @@ class UsersListAdapter(val context : Context, val dataSet: ArrayList<UserData>, 
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.uname.text = dataSet[position].username
-        viewHolder.status.text = dataSet[position].about
-
+        viewHolder.uname.text = dataSet[position].name
+        viewHolder.status.text = dataSet[position].username
         UsersManager(context).setProfilePic(dataSet[position].profilePicId, viewHolder.profilepic)
 
         // Calling the clickListener sent by the constructor

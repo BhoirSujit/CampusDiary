@@ -1,12 +1,17 @@
 package com.sujitbhoir.campusdiary.pages.Community
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityPostPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.PostData
+import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
 import com.sujitbhoir.campusdiary.datahandlers.PostsManager
 import com.sujitbhoir.campusdiary.helperclass.TimeFormater
 
@@ -22,11 +27,63 @@ class PostPage : AppCompatActivity() {
 
 
         val postid = intent.getStringExtra("postid")!!
+        val comPicId = intent.getStringExtra("CommunityPicID")
+
+        if (comPicId != "nopic")
+            CommunityManager(this).setProfilePic(comPicId!!, binding.ivComPic)
+
         PostsManager(this).getPostData(postid)
         {
             data = it
             setup()
+            CommunityManager(this).getCommunityData(data.communityId ) {
+                CommunityManager(this).setProfilePic(it.communityPicId, binding.ivComPic)
+                fun toggle(members : List<String>)
+                {
+                    if (Firebase.auth.currentUser!!.uid  == it.admin)
+                    {
+                        binding.join.visibility = View.GONE
+                        binding.joined.visibility = View.GONE
+                        binding.edit.visibility = View.VISIBLE
+
+
+                    }
+                    else if (Firebase.auth.currentUser!!.uid in  members)
+                    {
+                        binding.join.visibility = View.GONE
+                        binding.joined.visibility = View.VISIBLE
+                        binding.edit.visibility = View.GONE
+
+                    }
+                    else
+                    {
+                        binding.join.visibility = View.VISIBLE
+                        binding.joined.visibility = View.GONE
+                        binding.edit.visibility = View.GONE
+
+                    }
+                }
+                toggle(it.members)
+
+
+                binding.btnComJoinedit.setOnClickListener { it2 ->
+                    if (Firebase.auth.currentUser!!.uid  == it.admin)
+                    {
+                        val intent = Intent(this, MainActivity::class.java)
+                        //startActivity(intent)
+                    }
+                    else
+                    {
+                        CommunityManager(this).joinCommunity(it.id)
+                        {
+                            toggle(it)
+                        }
+                    }
+                }
+            }
         }
+
+
 
 
 
@@ -43,7 +100,7 @@ class PostPage : AppCompatActivity() {
 
         if (data.images.isEmpty())
         {
-            binding.carousel.visibility = View.GONE
+            binding.circularRevealCardView.visibility = View.GONE
         }
 
         //set Data
@@ -57,6 +114,25 @@ class PostPage : AppCompatActivity() {
 
 
         PostsManager(this).setCarouselImages(data.images, binding.carousel, lifecycle)
+
+        //like system
+        fun doLike()
+        {
+            PostsManager(this).likeAPost(data.id)
+            {
+                binding.btnLike.isSelected = it.contains(Firebase.auth.currentUser!!.uid)
+
+                binding.tvLikeCount.text = it.size.toString()
+            }
+        }
+
+        binding.btnLike.setOnClickListener {
+            doLike()
+        }
+
+        binding.tvLikeCount.setOnClickListener {
+            doLike()
+        }
 
 
     }

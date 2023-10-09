@@ -24,8 +24,22 @@ import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import org.w3c.dom.Text
 
-class RequestListAdapter(val context : Context ,private val dataSet: ArrayList<ReqData>, val requiredUsersData : HashMap<String, UserData>, val customClickListener: (ViewHolder, Int) -> Unit) :
+class RequestListAdapter(val context : Context ,private var dataSet: ArrayList<ReqData>, val requiredUsersData : HashMap<String, UserData>, val customClickListener: (ViewHolder, Int) -> Unit) :
 RecyclerView.Adapter<RequestListAdapter.ViewHolder>() {
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(dataSet: ArrayList<ReqData>)
+    {
+        this.dataSet = dataSet
+        this.notifyDataSetChanged()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val uname: TextView
@@ -92,6 +106,8 @@ RecyclerView.Adapter<RequestListAdapter.ViewHolder>() {
                     .addOnSuccessListener {
                         Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
                         Toast.makeText(context, "Request Accepted", Toast.LENGTH_LONG).show()
+                        dataSet.remove(dataSet[position])
+                        updateData(dataSet)
 
                     }
                     .addOnFailureListener {
@@ -102,11 +118,29 @@ RecyclerView.Adapter<RequestListAdapter.ViewHolder>() {
         }
 
         viewHolder.btnDecline.setOnClickListener {
+            //red flag
+            val ref = Firebase.firestore.collection("requests")
+            val flag : HashMap<String, Any> = hashMapOf(
+                "status" to "decline"
+            )
 
+            ref.document(dataSet[position].id)
+                .set(flag, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
+                    dataSet.remove(dataSet[position])
+                    updateData(dataSet)
+
+                }
+                .addOnFailureListener {
+                    Log.w(UserBottomSheet.TAG, "Error adding document", it)
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show()
+                }
         }
 
         viewHolder.btnIgnore.setOnClickListener {
-
+            dataSet.remove(dataSet[position])
+            updateData(dataSet)
         }
 
 

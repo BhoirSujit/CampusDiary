@@ -20,7 +20,13 @@ import org.w3c.dom.Text
 
 class ProductsGridAdapter(private val context : Context,val dataSet: ArrayList<ProductData>) :
     RecyclerView.Adapter<ProductsGridAdapter.ViewHolder>(){
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val img : ImageView
         val proName : TextView

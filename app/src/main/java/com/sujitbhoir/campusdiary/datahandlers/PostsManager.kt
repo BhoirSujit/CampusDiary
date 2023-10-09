@@ -31,6 +31,7 @@ import com.google.android.material.shape.Shapeable
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback.ShapeProvider
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -81,6 +82,20 @@ class PostsManager(private val context: Context) {
     fun getPostData(id : String, afterLoad : (postData : PostData) -> Unit)
     {
         ref.document(id)
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "post accessed with id : $it")
+                val data = it.toObject(PostData::class.java)!!
+                afterLoad(data)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "post denied  : $it")
+            }
+    }
+
+    fun getPostsData(filter: Filter, afterLoad : (postData : PostData) -> Unit)
+    {
+        ref.document()
             .get()
             .addOnSuccessListener {
                 Log.d(TAG, "post accessed with id : $it")
@@ -212,9 +227,6 @@ class PostsManager(private val context: Context) {
 
                 else -> TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,  198F,  context.resources.displayMetrics).toInt()
             })
-
-
-
 
 
             val shapeAppearanceModel = ShapeAppearanceModel()

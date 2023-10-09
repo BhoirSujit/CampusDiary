@@ -16,9 +16,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <Button
+        style="@style/Widget.Material3.Button.IconButton.Outlined"
         android:id="@+id/back_btn"
-        android:src="@drawable/arrow_back_24px"
+        android:drawableEnd="@drawable/arrow_back_24px"
+        android:drawableTint="?colorOnPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
