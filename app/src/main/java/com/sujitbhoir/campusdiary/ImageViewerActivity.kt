@@ -2,6 +2,7 @@ package com.sujitbhoir.campusdiary
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -11,7 +12,7 @@ class ImageViewerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_viewer)
 
-        val b = findViewById<ImageView>(R.id.back_btn)
+        val b = findViewById<Button>(R.id.back_btn)
         b.setOnClickListener{
             finish()
         }

@@ -25,6 +25,14 @@ import java.util.Locale
 class OwnProductListAdapter(private val context : Context, private val dataSet: ArrayList<ProductData>) :
     RecyclerView.Adapter<OwnProductListAdapter.ViewHolder>(){
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val img : ImageView
         val proName : TextView
@@ -73,7 +81,7 @@ class OwnProductListAdapter(private val context : Context, private val dataSet: 
             val d = MaterialAlertDialogBuilder(context)
                 .setTitle("Do you want to Remove")
                 .setMessage("Once you remove you cannot retrieve them back")
-                .setPositiveButton("Create"){ a, b ->
+                .setPositiveButton("Remove"){ a, b ->
                 MarketplaceManager(context).removeProduct(dataSet[position].id)
                     {
                         Toast.makeText(context, "Removed Successfully", Toast.LENGTH_LONG).show()

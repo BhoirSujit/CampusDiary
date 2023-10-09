@@ -1,29 +1,35 @@
 package com.sujitbhoir.campusdiary.adapters
 
+import android.R.attr.label
+import android.R.attr.text
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Path.Direction
-import android.view.Gravity
+import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.bottomsheet.UserBottomSheet
 import com.sujitbhoir.campusdiary.dataclasses.MessageData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.CommunicationManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
-import com.sujitbhoir.campusdiary.adapters.ChatListAdapter
 import com.sujitbhoir.campusdiary.helperclass.TimeFormater
-import java.lang.Math.abs
+import com.sujitbhoir.campusdiary.pages.communication.ChatActivity
 
-class ChatListAdapter(val context : Context) :
+
+class ChatListAdapter(val context : Context, val sessionId : String,val requiredUserData : HashMap<String, UserData>) :
     RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return position
@@ -74,8 +80,7 @@ class ChatListAdapter(val context : Context) :
     var dataSet = ArrayList<MessageData>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(data : ArrayList<MessageData>)
-    {
+    fun updateData(data : ArrayList<MessageData>) {
         dataSet = data
         this.notifyDataSetChanged()
     }
@@ -113,9 +118,22 @@ class ChatListAdapter(val context : Context) :
             //owns
             viewHolder.own_layout.visibility = View.VISIBLE
             viewHolder.own_msg.text = dataSet[position].msg
-            //if (dataSet[position].img.isNotBlank())
-
             viewHolder.own_msg_date.text = tf.getHoursMin(dataSet[position].time)
+
+
+            if (dataSet[position].img.isNotBlank())
+            {
+                viewHolder.own_media_pic.visibility = View.VISIBLE
+                CommunicationManager(context).setChatMedia(dataSet[position].img, viewHolder.own_media_pic)
+                viewHolder.own_media_pic.setOnClickListener {
+                    val intent = Intent(context, ImageViewerActivity::class.java)
+                    intent.putExtra("image", CommunicationManager(context).getChatMediaFile(dataSet[position].img) )
+                    context.startActivity(intent)
+
+                }
+            }
+
+
         }
 
         else
@@ -124,7 +142,54 @@ class ChatListAdapter(val context : Context) :
             viewHolder.other_layout.visibility = View.VISIBLE
             viewHolder.other_msg.text = dataSet[position].msg
             viewHolder.other_msg_date.text = tf.getHoursMin(dataSet[position].time)
+
+            //set image
+            if (requiredUserData.containsKey(dataSet[position].sender))
+            {
+                UsersManager(context).setProfilePic(requiredUserData[dataSet[position].sender]!!.profilePicId, viewHolder.other_profile_pic)
+
+                viewHolder.other_profile_pic.setOnClickListener {
+                    val userBottomSheet = UserBottomSheet(requiredUserData[dataSet[position].sender]!!)
+                    userBottomSheet.show((context as ChatActivity).supportFragmentManager, UserBottomSheet.TAG)
+                }
+            }
+
+            if (dataSet[position].img.isNotBlank())
+            {
+                viewHolder.other_media_pic.visibility = View.VISIBLE
+                CommunicationManager(context).setChatMedia(dataSet[position].img, viewHolder.other_media_pic)
+            }
+
+            viewHolder.other_media_pic.setOnClickListener {
+                val intent = Intent(context, ImageViewerActivity::class.java)
+                intent.putExtra("image", CommunicationManager(context).getChatMediaFile(dataSet[position].img))
+                context.startActivity(intent)
+            }
+
+
+
         }
+
+        viewHolder.itemView.setOnCreateContextMenuListener { contextMenu, view, contextMenuInfo ->
+            contextMenu.add("send at ${TimeFormater().getFormatedTime(dataSet[position].time)}").setOnMenuItemClickListener {
+                true
+            }
+            contextMenu.add("Copy").setOnMenuItemClickListener {
+                val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+                val clip = ClipData.newPlainText("message test", dataSet[position].msg)
+                clipboard!!.setPrimaryClip(clip)
+                true
+            }
+
+            if (dataSet[position].sender == Firebase.auth.currentUser!!.uid) {
+                contextMenu.add("delete").setOnMenuItemClickListener {
+                    CommunicationManager(context).deleteMessage(sessionId, dataSet[position].id)
+                    true
+                }
+            }
+
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

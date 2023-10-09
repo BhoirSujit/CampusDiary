@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,6 +23,7 @@ import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.ProductData
+import com.sujitbhoir.campusdiary.dataclasses.UserData
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -38,7 +40,7 @@ class CommunityManager(val context : Context) {
     private fun getCommunityRef(id : String)  = communityRef.document(id)
 
     private fun uniqueId() : String = (Timestamp.now().seconds + UUID.randomUUID().hashCode()).toString()
-    private fun getCommunityPicFile(profilePicId : String) : File = File(context.filesDir.absolutePath+ File.separator + "CommunityPictures", "$profilePicId.jpg")
+    fun getCommunityPicFile(profilePicId : String) : File = File(context.filesDir.absolutePath+ File.separator + "CommunityPictures", "$profilePicId.jpg")
     private fun getCommunityPicRef(profilePicId : String) : StorageReference = storage.reference.child("CommunityPictures/$profilePicId.jpg")
 
     init {
@@ -167,6 +169,46 @@ class CommunityManager(val context : Context) {
             }
 
 
+    }
+
+    fun  getCommunitiesData(ids : ArrayList<String>, afterLoad : (usersData : HashMap<String, CommunityData>) -> Unit)
+    {
+
+        //create filters
+        val filters = ArrayList<Filter>()
+        for (id in ids)
+        {
+            filters.add(Filter.equalTo("id",id))
+        }
+
+        var f = arrayOfNulls<Filter>(filters.size)
+        f = filters.toArray(f)
+
+        //
+        val reqComData = HashMap<String, CommunityData>()
+
+
+
+
+        //suggest //get data
+        communityRef
+            .where( Filter.or(
+                *f
+            ))
+            .get()
+            .addOnSuccessListener {
+                //parse data
+                for (doc in it.documents)
+                {
+                    val cData = doc.toObject(CommunityData::class.java)!!
+                    Log.d(TAG, "data are : $cData")
+                    reqComData.put(cData.id, cData)
+                }
+                afterLoad(reqComData)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

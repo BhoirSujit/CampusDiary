@@ -1,8 +1,10 @@
 package com.sujitbhoir.campusdiary.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,19 +22,36 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.rpc.context.AttributeContext.Auth
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.PostData
+import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.PostsManager
 import com.sujitbhoir.campusdiary.helperclass.TimeFormater
-import com.sujitbhoir.campusdiary.pages.Communication
 import com.sujitbhoir.campusdiary.pages.Community.PostPage
-import org.w3c.dom.Text
 import java.util.Calendar
-import java.util.HashMap
 import java.util.Locale
 
-class PostListAdapter(private val context : Context, private val dataSet: ArrayList<PostData>) :
+class PostListAdapter(private val context : Context, private var dataSet: ArrayList<PostData>) :
 RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
+
+    var communitiesData = HashMap<String, CommunityData>()
+    val TAG = "PostListAdapterTAG"
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(dataSet: ArrayList<PostData>, requirecommunityData : HashMap<String, CommunityData>)
+    {
+        this.communitiesData = requirecommunityData
+        this.dataSet = dataSet
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val comName : TextView
@@ -80,6 +99,10 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
 
         holder.like.isSelected = dataSet[position].likes.contains(Firebase.auth.currentUser!!.uid)
 
+        //Log.d(TAG, "data are" +communitiesData)
+        if (communitiesData.containsKey(dataSet[position].communityId))
+            CommunityManager(context).setProfilePic( communitiesData.get(dataSet[position].communityId)!!.communityPicId, holder.comPic)
+
 
         fun doLike()
         {
@@ -108,6 +131,10 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
         holder.itemView.setOnClickListener {
             val intent = Intent(context, PostPage::class.java)
             intent.putExtra("postid", dataSet[position].id)
+            if (communitiesData.containsKey(dataSet[position].communityId))
+            intent.putExtra("CommunityPicID", communitiesData.get(dataSet[position].communityId)!!.communityPicId)
+            else intent.putExtra("CommunityPicID","nopic")
+
             context.startActivity(intent)
         }
 
@@ -117,48 +144,3 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
     override fun getItemCount() : Int = dataSet.size
 
 }
-
-//class ChatListAdapter(private val context : Context, private val dataSet: ArrayList<Communication.SessionsInfo>) :
-//    RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
-//
-//    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-//        val uname: TextView
-//        val profilepic : ImageView
-//        val message : TextView
-//        val lmtime : TextView
-//
-//        init {
-//            // Define click listener for the ViewHolder's View
-//            uname = view.findViewById(R.id.tv_uname)
-//            profilepic = view.findViewById(R.id.iv_profile_pic)
-//            message = view.findViewById(R.id.tv_message)
-//            lmtime = view.findViewById(R.id.tv_mtime)
-//        }
-//    }
-//
-//    // Create new views (invoked by the layout manager)
-//    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-//        // Create a new view, which defines the UI of the list item
-//        val view = LayoutInflater.from(viewGroup.context)
-//            .inflate(R.layout.chat_row_item, viewGroup, false)
-//
-//        return ViewHolder(view)
-//    }
-//
-//    // Replace the contents of a view (invoked by the layout manager)
-//    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-//
-//        // Get element from your dataset at this position and replace the
-//        // contents of the view with that element
-//        viewHolder.uname.text = dataSet[position].sendername
-//        viewHolder.message.text = dataSet[position].lasmes
-//        viewHolder.lmtime.text = dataSet[position].lastime
-//
-//        FirebaseStorageHandler(context).setProfilePic(dataSet[position].members[0], viewHolder.profilepic)
-//
-//    }
-//
-//    // Return the size of your dataset (invoked by the layout manager)
-//    override fun getItemCount() = dataSet.size
-//
-//}

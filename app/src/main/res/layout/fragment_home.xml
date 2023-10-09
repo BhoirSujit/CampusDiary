@@ -10,6 +10,7 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|enterAlways"
         android:theme="@style/ThemeCampusDiaryTopBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,22 +29,77 @@
             app:title="@string/app_name"
             app:titleTextColor="#407bff" />
 
-        <com.google.android.material.divider.MaterialDivider
+        <View
+            android:id="@+id/divider11"
             android:layout_width="match_parent"
-            app:dividerColor="#CAC4D0"
-            android:layout_height="wrap_content"/>
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_post"
-        android:layout_width="match_parent"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup2"
+                    android:layout_width="match_parent"
+                    app:singleLine="true"
+                    app:singleSelection="true"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip4"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip5"
+                        android:layout_width="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_height="wrap_content"
+                        android:text="Following" />
+
+
+
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipGroup2" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
 
 

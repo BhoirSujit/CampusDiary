@@ -124,7 +124,6 @@ class Marketplace : Fragment() {
                     val userBottomSheet = MarketplaceBottomSheet(data.id)
                     userBottomSheet.show(parentFragmentManager, MarketplaceBottomSheet.TAG)
                     true
-
                 }
 
                 R.id.profile -> {

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 
@@ -43,6 +44,7 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
         tvuname.text = userData.username
         tvabout.text = userData.about
         campusname.text = userData.campus
+        UsersManager(view.context).setProfilePic(userData.profilePicId, profilepic)
 
 
 
@@ -58,9 +60,11 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
             val myData = DataHandler.getUserData(requireContext())!!
 
             btnsend.setOnClickListener {
+                val ref = Firebase.firestore.collection("requests").document()
+                val id = ref.id
                 //request
                 val reqmes : HashMap<String, Any> = hashMapOf(
-                    "id" to userData.id+myData.id,
+                    "id" to id,
                     "sender" to myData.id,
                     "receiver" to userData.id,
                     "message" to tvreq.text.toString(),
@@ -68,8 +72,7 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
                     "status" to "requested"
                 )
 
-                val ref = Firebase.firestore.collection("requests")
-                ref.document(userData.id+myData.id)
+                ref
                     .set(reqmes)
                     .addOnSuccessListener {
                         Log.d(TAG, "DocumentSnapshot added with ID: ${it}")

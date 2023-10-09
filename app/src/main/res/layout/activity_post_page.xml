@@ -63,23 +63,37 @@
                 app:srcCompat="@drawable/more_vert_24px" />
 
 
-            <org.imaginativeworld.whynotimagecarousel.ImageCarousel
 
-                android:id="@+id/carousel"
+
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:id="@+id/circularRevealCardView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                app:bottomShadowAlpha="0"
-                app:imagePlaceholder="@mipmap/ic_launcher_new_round"
-                app:imageScaleType="centerInside"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintDimensionRatio="H,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                app:showCaption="false"
-                app:showNavigationButtons="false"
-                app:topShadowAlpha="0"/>
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+
+                    android:id="@+id/carousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:bottomShadowAlpha="0"
+                    app:imagePlaceholder="@mipmap/ic_launcher_new_round"
+                    app:imageScaleType="centerCrop"
+                    app:showCaption="false"
+                    app:showNavigationButtons="false"
+                    app:topShadowAlpha="0">
+
+
+                </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
+
+
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
             <TextView
                 android:id="@+id/tv_name"
@@ -95,8 +109,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
 
-
-
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
@@ -106,7 +118,7 @@
                 android:text="16/8/2023"
                 android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+                app:layout_constraintTop_toBottomOf="@+id/circularRevealCardView" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -130,7 +142,7 @@
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintTop_toBottomOf="@+id/divider10" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -172,19 +184,43 @@
                     app:layout_constraintStart_toStartOf="@+id/tv_cname"
                     app:layout_constraintTop_toBottomOf="@+id/tv_cname" />
 
-                <Button
+
+                <FrameLayout
                     android:id="@+id/btn_com_joinedit"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Follow"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
+                    app:layout_constraintTop_toTopOf="@+id/iv_com_pic">
+
+                    <Button
+                        android:id="@+id/join"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="join" />
+
+                    <Button
+                        android:id="@+id/joined"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="Joined" />
+
+                    <Button
+                        android:id="@+id/edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="edit" />
+                </FrameLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
+
                 android:id="@+id/btn_like"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -192,7 +228,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_date"
                 app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
                 app:layout_constraintTop_toTopOf="@+id/tv_date"
-                app:srcCompat="@drawable/favorite_24px" />
+                android:background="@drawable/like_icon" />
 
             <TextView
                 android:id="@+id/tv_like_count"
@@ -204,6 +240,18 @@
                 app:layout_constraintBottom_toBottomOf="@+id/btn_like"
                 app:layout_constraintEnd_toStartOf="@+id/btn_option"
                 app:layout_constraintTop_toTopOf="@+id/btn_like" />
+
+            <View
+                android:id="@+id/divider10"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

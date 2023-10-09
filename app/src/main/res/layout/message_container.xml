@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/holder_layout"
@@ -7,24 +7,31 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingTop="8dp"
+    android:paddingTop="4dp"
     android:paddingRight="16dp"
     android:paddingBottom="4dp">
 
-    <TextView
-        android:id="@+id/information_chat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Information"
-        android:padding="16dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/information_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Information"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/othersLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
         android:orientation="horizontal"
@@ -47,6 +54,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Material3.CardView.Filled"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -57,10 +65,10 @@
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/other_img_pic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
                         android:src="@drawable/image_upload_rafiki"
                         android:visibility="gone"
                         app:layout_constrainedHeight="true"
@@ -68,7 +76,8 @@
                         app:layout_constraintHeight_max="250dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_max="250dp" />
+                        app:layout_constraintWidth_max="250dp"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
 
                     <TextView
                         android:id="@+id/other_tv_message"
@@ -106,13 +115,13 @@
     <LinearLayout
 
         android:id="@+id/own_layout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/othersLayout"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="78dp"
         android:gravity="end"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -126,9 +135,9 @@
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Material3.CardView.Filled"
-                app:cardBackgroundColor="@color/md_theme_dark_error"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?colorPrimaryInverse">
 
 
                 <LinearLayout
@@ -137,10 +146,10 @@
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/own_img_pic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
                         android:src="@drawable/image_upload_rafiki"
                         android:visibility="gone"
                         app:layout_constrainedHeight="true"
@@ -148,7 +157,8 @@
                         app:layout_constraintHeight_max="250dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_max="250dp" />
+                        app:layout_constraintWidth_max="250dp"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
 
                     <TextView
                         android:id="@+id/own_tv_message"
@@ -165,8 +175,8 @@
                         style="@style/TextAppearance.Material3.BodySmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
                         android:layout_gravity="end"
+                        android:layout_marginStart="24dp"
                         android:text="date"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -182,4 +192,4 @@
     </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

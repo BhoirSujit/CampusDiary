@@ -45,8 +45,9 @@
                 android:id="@+id/carousel"
                 style="@style/ShapeAppearance.Material3.Corner.ExtraLarge"
                 android:layout_width="match_parent"
-                android:layout_height="456dp"
-                app:bottomShadowAlpha="0"
+                android:layout_height="400dp"
+                app:bottomShadowAlpha="0.2"
+
                 app:imagePlaceholder="@mipmap/ic_launcher_new_round"
                 app:imageScaleType="centerInside"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +60,13 @@
 
             </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
 
+            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+                android:id="@+id/drag_handle"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
@@ -69,13 +77,14 @@
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
+                app:layout_constraintTop_toBottomOf="@+id/drag_handle" />
 
             <TextView
                 android:id="@+id/tv_prize"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="100"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
@@ -92,7 +101,7 @@
                 android:layout_marginTop="16dp"
                 android:src="@drawable/location_on_24px"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
             <TextView
                 android:id="@+id/tv_campus"
@@ -122,11 +131,11 @@
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:text="Details"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/divider19" />
 
             <TextView
@@ -285,16 +294,6 @@
                 app:layout_constraintTop_toBottomOf="@id/textView1781" />
 
             <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="24dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView17"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView17"
-                app:srcCompat="@drawable/info_24px" />
-
-            <ImageView
                 android:id="@+id/imageView9"
                 android:layout_width="24dp"
                 android:layout_height="0dp"
@@ -358,6 +357,8 @@
                 <include layout="@layout/feedback_view" />
 
             </FrameLayout>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

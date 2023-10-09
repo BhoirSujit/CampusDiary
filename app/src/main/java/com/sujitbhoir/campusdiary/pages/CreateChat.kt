@@ -83,12 +83,11 @@ class CreateChat : AppCompatActivity() {
             if(binding.reqchip.isChecked)
             {
                 loadRequest()
-                Toast.makeText(this, "i was request", Toast.LENGTH_LONG).show()
             }
             else if (binding.sugchip.isChecked)
             {
                 loadSuggested()
-                Toast.makeText(this, "i was suggest", Toast.LENGTH_LONG).show()
+
             }
 
         }
@@ -165,12 +164,11 @@ class CreateChat : AppCompatActivity() {
 
                         //Dialog
 
-                        val dialog = Dialog(this , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
-                        dialog.setContentView(R.layout.request_accept_dialog_box)
-                        val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
-                        val btnclose = dialog.findViewById<Button>(R.id.btn_close)
-                        val btnignore = dialog.findViewById<Button>(R.id.btn_ignore)
-                        val tvreq = dialog.findViewById<EditText>(R.id.tv_request_message)
+
+                        val btnsend = findViewById<Button>(R.id.btn_send_req)
+                        val btnclose = findViewById<Button>(R.id.btn_decline)
+                        val btnignore = findViewById<Button>(R.id.btn_ignore_req)
+                        val tvreq = findViewById<EditText>(R.id.tv_request_message)
 
 
 
@@ -193,8 +191,9 @@ class CreateChat : AppCompatActivity() {
                                 .set(session)
                                 .addOnSuccessListener {
                                     Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
-                                    db.collection("request").document(myData.id+reqsData[i].sender).delete().addOnSuccessListener {
-                                        dialog.dismiss()
+                                    db.collection("request").document(sessionid).delete().addOnSuccessListener {
+                                        reqsData.remove(reqsData[i])
+                                        requestListAdapter?.updateData(reqsData)
                                     }
                                 }
                                 .addOnFailureListener {
@@ -205,16 +204,17 @@ class CreateChat : AppCompatActivity() {
                         }
                         btnclose.setOnClickListener {
                             //red flag
-                            val ref = Firebase.firestore.collection("request")
+                            val ref = Firebase.firestore.collection("requests")
                             val flag : HashMap<String, Any> = hashMapOf(
-                                "flag" to true
+                                "status" to "decline"
                             )
 
-                            ref.document(myData.id+reqsData[i].sender)
+                            ref.document(reqsData[i].id)
                                 .set(flag, SetOptions.merge())
                                 .addOnSuccessListener {
                                     Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
-                                    dialog.dismiss()
+                                    reqsData.remove(reqsData[i])
+                                    requestListAdapter?.updateData(reqsData)
 
                                 }
                                 .addOnFailureListener {
@@ -224,10 +224,9 @@ class CreateChat : AppCompatActivity() {
                         }
 
                         btnignore.setOnClickListener {
-                            dialog.dismiss()
+                            reqsData.remove(reqsData[i])
+                            requestListAdapter?.updateData(reqsData)
                         }
-
-                        dialog.show()
 
 
                     }
