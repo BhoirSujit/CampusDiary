@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView
+    android:scrollbarSize="0dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,47 +14,77 @@
         android:layout_height="match_parent"
        >
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeCampusDiaryTopBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar1"
+                style="@style/Widget.Material3.AppBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="Profile"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:elevation="10dp"
+                />
+
+            <View
+                android:id="@+id/divider13"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
 
         <ImageView
 
             android:id="@+id/imageView2"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-      />
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageView
             android:id="@+id/profilepic"
             android:layout_width="86dp"
             android:layout_height="86dp"
             android:layout_marginEnd="32dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.518"
-            app:shapeAppearanceOverlay="@style/circleImageView"
-            app:srcCompat="@drawable/user"
-           />
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            app:layout_constraintVertical_bias="0.518" />
 
         <View
             android:id="@+id/divider2"
-            android:layout_width="409dp"
+            android:layout_width="0dp"
             android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginEnd="16dp"
+            android:maxLines="1"
             android:text="your name"
-            android:textSize="28dp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
             app:layout_constraintBottom_toBottomOf="@+id/profilepic"
+            app:layout_constraintEnd_toStartOf="@+id/profilepic"
             app:layout_constraintStart_toStartOf="@+id/imageView2"
             app:layout_constraintTop_toTopOf="@+id/profilepic"
             app:layout_constraintVertical_bias="0.0" />
@@ -63,20 +94,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:pointerIcon="none"
             android:text="yourname1234"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="@+id/imageView6" />
-
-        <Button
-            android:id="@+id/btn_editprofile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
             android:id="@+id/textView8"
@@ -85,8 +107,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="18dp"
             android:text="About"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
 
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -98,6 +120,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:text="bio"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -118,31 +141,20 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:text="Settings"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/divider" />
 
-        <View
-            android:id="@+id/divider7"
-            android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="1dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
         <LinearLayout
             android:layout_width="0dp"
-            android:padding="10dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/divider7">
+            app:layout_constraintTop_toBottomOf="@+id/textView10">
 
             <LinearLayout
                 android:id="@+id/setting_account"
@@ -168,13 +180,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account"
-                        android:textSize="18sp"
-                         />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/setting_manageinterest"
                 android:layout_width="match_parent"
@@ -188,7 +200,7 @@
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
                     android:src="@drawable/interests_24px"
-                    app:tint="?colorPrimary"/>
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -199,15 +211,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Manage Interest"
-                        android:textSize="18sp"
-                        />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
 
             </LinearLayout>
+
             <LinearLayout
-                android:id="@+id/setting_chattheme"
+                android:id="@+id/setting_managestorage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -218,8 +230,8 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
-                    android:src="@drawable/chat_48px"
-                    app:tint="?colorPrimary"/>
+                    android:src="@drawable/folder_managed_24px"
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -229,9 +241,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chat Theme"
-                        android:textSize="18sp"
-                        />
+                        android:text="Manage Storage"
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -251,7 +262,7 @@
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
                     android:src="@drawable/lock_reset_24px"
-                    app:tint="?colorPrimary"/>
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -262,8 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reset Password"
-                        android:textSize="18sp"
-                        />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -283,7 +293,7 @@
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
                     android:src="@drawable/send_24px"
-                    app:tint="?colorPrimary"/>
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -294,8 +304,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Share App"
-                        android:textSize="18sp"
-                        />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -315,7 +324,7 @@
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
                     android:src="@drawable/info_24px"
-                    app:tint="?colorPrimary"/>
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -326,8 +335,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="about"
-                        android:textSize="18sp"
-                        />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -347,7 +355,7 @@
                     android:layout_height="28dp"
                     android:layout_marginRight="18dp"
                     android:src="@drawable/logout_24px"
-                    app:tint="?colorPrimary"/>
+                    app:tint="?colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -358,8 +366,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Log out"
-                        android:textSize="18sp"
-                         />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -373,7 +380,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:text="unknown"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/imageView3" />

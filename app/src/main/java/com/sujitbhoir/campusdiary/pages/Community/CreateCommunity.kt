@@ -2,7 +2,6 @@ package com.sujitbhoir.campusdiary.pages.Community
 
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -27,8 +26,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityCreateCommunityBinding
-import java.io.ByteArrayOutputStream
-import java.io.IOException
+import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 
 
 class CreateCommunity : AppCompatActivity() {
@@ -38,7 +38,7 @@ class CreateCommunity : AppCompatActivity() {
     private lateinit var storage : FirebaseStorage
     private lateinit var auth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
-    var imgUri = Uri.parse("android.resource://my.package.name/" + R.drawable.profile_icon)
+    var imgUri : Uri? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +60,7 @@ class CreateCommunity : AppCompatActivity() {
         }
 
         //set tags
-        val taglist = arrayOf("Astrology","Writing", "Singing", "Painting", "Drawing","Fitness","NCC","Yoga","Gym","Cooking","Nature","Poetry","Travelling","Dance","Books","Cricket","Coding")
+        val taglist = resources.getStringArray(R.array.CommunityCategory)
         AddChipsInView(taglist, binding.chipGrouptags)
 
 
@@ -75,25 +75,11 @@ class CreateCommunity : AppCompatActivity() {
             if (it.resultCode == RESULT_OK)
             {
                 imgUri = it.data?.data!!
-                val requestOptions = RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .circleCrop()
-                //.override(100, 100)
-
-                val circularProgressDrawable = CircularProgressDrawable(this)
-                circularProgressDrawable.strokeWidth = 5f
-                circularProgressDrawable.centerRadius = 30f
-                circularProgressDrawable.start()
-
                 //load pitcher
                 Glide.with(this)
                     .load(imgUri)
-                    .placeholder(circularProgressDrawable)
-                    .apply(requestOptions)
+                    .circleCrop()
                     .into(binding.profilepic)
-                    .onLoadFailed(resources.getDrawable(R.drawable.user))
-
 
             }
         }
@@ -109,14 +95,57 @@ class CreateCommunity : AppCompatActivity() {
 
         //btn create
         binding.btnCreate.setOnClickListener {
+            binding.btnCreate.isClickable = false
+            if (validate())
             createCommunity()
+            else
+                binding.btnCreate.isClickable = true
         }
 
 
     }
 
+    fun validate() : Boolean
+    {
+        binding.tvFname.error = null
+        binding.tvAbout.error = null
+        binding.dpCampus.error = null
+
+
+        if (binding.tvFname.text!!.isBlank())
+        {
+            binding.tvFname.error = "please enter community name"
+            return false
+        }
+        if (binding.tvAbout.text!!.isBlank())
+        {
+            binding.tvAbout.error = "please enter community Details"
+            return false
+        }
+        if (binding.dpCampus.text!!.isBlank())
+        {
+            binding.dpCampus.error = "please select campus"
+            return false
+        }
+
+
+        if (binding.chipGrouptags.checkedChipIds.isEmpty())
+        {
+            Toast.makeText(this, "Please select at least one tag", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (imgUri == null)
+        {
+            Toast.makeText(this, "Please add community pic", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
     fun createCommunity()
     {
+
         val checkedChipIds = binding.chipGrouptags.checkedChipIds
         val tags = ArrayList<String>()
 
@@ -125,61 +154,20 @@ class CreateCommunity : AppCompatActivity() {
             tags.add(findViewById<Chip>(chip).text.toString())
         }
 
-        val ref = Firebase.firestore.collection("community").document()
-        val id = ref.id
-
-        val communityInfo : HashMap<String, Any> = hashMapOf(
-          "id" to id,
-        "name" to binding.tvFname.text.toString(),
-       "about" to binding.tvAbout.text.toString(),
-         "campus" to binding.dpCampus.text.toString(),
-         "admin" to auth.currentUser!!.uid,
-            "members" to listOf(auth.currentUser!!.uid),
-        "tags"  to tags
-        )
-
-        ref.set(communityInfo)
-            .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-                //compress file
-                var bitmap: Bitmap? = null
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imgUri)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                val baos = ByteArrayOutputStream()
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-
-                val data = baos.toByteArray()
-
-                val ref2 = storage.reference.child("communityIcon/${id}.png")
-                ref2.putBytes(data)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "successfull upload")
-
-                        Toast.makeText(this, "Successfully Created Community", Toast.LENGTH_LONG).show()
-                        finish()
-
-                    }
-                    .addOnFailureListener{
-                        Log.d(TAG, "unsuccessfull upload: $it")
-                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
-                    }
-
-
-
-            }
-            .addOnFailureListener {
-                Log.w(TAG, "Error adding document", it)
-            }
-
+        CommunityManager(this).createCommunity(
+            name = binding.tvFname.text.toString(),
+            about = binding.tvAbout.text.toString(),
+            campus = binding.dpCampus.text.toString(),
+            imgUri = imgUri!!,
+            admin = auth.currentUser!!.uid,
+            tags = tags.toList()
+            )
+        {
+            Toast.makeText(this, "Successfully Created Community", Toast.LENGTH_LONG).show()
+            finish()
+        }
     }
 
-    private fun uploadIcon(uri : Uri, name : String)
-    {
-
-    }
 
     fun AddChipsInView(chipslist : Array<String>, view : ChipGroup, style : Int = com.google.android.material.R.style.Widget_Material3_Chip_Filter)
     {

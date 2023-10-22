@@ -30,65 +30,68 @@ import java.nio.charset.Charset
 class DataHandler {
     private val TAG = "datahandlerTAG"
 
-    fun getUserData(baseContext : Context): UserData? {
-
-
-
-        val file = File(baseContext.filesDir,"user_data.json")
-        var json: String = "{}"
-
-        if (file.exists())
-        {
-            try {
-                val inputStream: InputStream = FileInputStream(file)
-                val size = inputStream.available()
-                val buffer = ByteArray(size)
-                inputStream.read(buffer)
-                inputStream.close()
-                json = String(buffer, Charset.defaultCharset())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        val gson = Gson()
-        return gson.fromJson(json, UserData::class.java)
-    }
-
-    fun updateUserData(baseContext: Context)
+    companion object
     {
-        //get user info
-        val db = Firebase.firestore
-        val auth = Firebase.auth
+        private val TAG = "datahandlerTAG"
+        fun getUserData(baseContext : Context): UserData? {
+            val file = File(baseContext.filesDir,"user_data.json")
+            var json: String = "{}"
 
-        db.collection("users").document(auth.currentUser!!.uid)
-            .get()
-            .addOnSuccessListener {
-
-                Log.d(TAG, "data are : ${it.data}")
-                if (it != null && it.exists()) {
-                    //setting data
-                    val userData = it.toObject(UserData::class.java)
-
-                    val gson = Gson()
-                    val json = gson.toJson(userData)
-                    val fileContents = json.toByteArray()
-                    val file = File(baseContext.filesDir,"user_data.json")
-                    try {
-                        FileOutputStream(file).use {
-                            it.write(fileContents)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                    Log.d(TAG, "main TAG , fname : ${userData}")
+            if (file.exists())
+            {
+                try {
+                    val inputStream: InputStream = FileInputStream(file)
+                    val size = inputStream.available()
+                    val buffer = ByteArray(size)
+                    inputStream.read(buffer)
+                    inputStream.close()
+                    json = String(buffer, Charset.defaultCharset())
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-            .addOnFailureListener {
-                Log.d(TAG, "failed to load")
-            }
+
+            val gson = Gson()
+            return gson.fromJson(json, UserData::class.java)
+        }
+
+        fun updateUserData(baseContext: Context)
+        {
+            //get user info
+            val db = Firebase.firestore
+            val auth = Firebase.auth
+
+            db.collection("users").document(auth.currentUser!!.uid)
+                .get()
+                .addOnSuccessListener {
+
+                    Log.d(TAG, "data are : ${it.data}")
+                    if (it != null && it.exists()) {
+                        //setting data
+                        val userData = it.toObject(UserData::class.java)
+
+                        val gson = Gson()
+                        val json = gson.toJson(userData)
+                        val fileContents = json.toByteArray()
+                        val file = File(baseContext.filesDir,"user_data.json")
+                        try {
+                            FileOutputStream(file).use {
+                                it.write(fileContents)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                        Log.d(TAG, "main TAG , fname : ${userData}")
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d(TAG, "failed to load")
+                }
+        }
     }
+
+
 
     fun setProfilePic(context: Context, uid: String, image : ImageView)
     {

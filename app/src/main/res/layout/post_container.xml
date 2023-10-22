@@ -5,100 +5,112 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:paddingLeft="16dp"
-    android:paddingTop="8dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="8dp">
+    >
 
     <ImageView
+
         android:id="@+id/iv_com_pic"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/user"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_post_title" />
 
     <TextView
         android:id="@+id/tv_cname"
+        style="@style/TextAppearance.Material3.BodyMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:text="Name"
-
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
         app:layout_constraintStart_toEndOf="@+id/iv_com_pic"
         app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
 
-    <TextView
-        android:id="@+id/tv_auther"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="auther"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_com_pic"
-        app:layout_constraintStart_toStartOf="@+id/tv_cname"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cname" />
-
-    <ImageView
-        android:id="@+id/imageView4"
+    <FrameLayout
+        android:id="@+id/post_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_auther"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+
+
+    />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/tv_post_title"
+        style="@style/TextAppearance.Material3.TitleMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
         android:text="Title"
-        android:textSize="16sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
-
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="context"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+        app:layout_constraintTop_toBottomOf="@+id/post_image" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
 
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4" >
+        app:layout_constraintBottom_toBottomOf="@+id/post_image"
+        app:layout_constraintEnd_toEndOf="@+id/post_image" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="6dp">
+    <View
+        android:id="@+id/divider17"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_com_pic" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/favorite_24px" />
+    <ImageView
+        android:id="@+id/btn_like"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_cname"
+        app:layout_constraintEnd_toStartOf="@+id/tv_like_count"
+        app:layout_constraintTop_toTopOf="@+id/tv_cname"
+        android:background="@drawable/like_icon" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:text="100" />
-        </LinearLayout>
+    <TextView
+        android:id="@+id/tv_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="100"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_like"
+        app:layout_constraintEnd_toStartOf="@+id/btn_option"
+        app:layout_constraintTop_toTopOf="@+id/btn_like"
+        app:layout_constraintVertical_bias="0.6" />
 
-    </com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:id="@+id/btn_option"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_like"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_like"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/more_vert_24px" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

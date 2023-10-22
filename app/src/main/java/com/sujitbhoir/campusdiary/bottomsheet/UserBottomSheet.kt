@@ -8,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.ReportsManager
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 
@@ -35,38 +38,43 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
         val tvuname = view.findViewById<TextView>(R.id.tv_uname)
         val profilepic = view.findViewById<ImageView>(R.id.profilepic)
         val tvabout = view.findViewById<TextView>(R.id.tv_about1)
-        val reqbtn = view.findViewById<Button>(R.id.btn_editprofile)
+        val reqbtn = view.findViewById<LinearLayout>(R.id.contact_admin)
+        val repbtn = view.findViewById<LinearLayout>(R.id.report_user)
+        val campusname = view.findViewById<TextView>(R.id.campusname)
 
         tvname.text = userData.name
         tvuname.text = userData.username
         tvabout.text = userData.about
+        campusname.text = userData.campus
+        UsersManager(view.context).setProfilePic(userData.profilePicId, profilepic)
+
+
+
+
 
         reqbtn.setOnClickListener {
-
-
-
             val dialog = Dialog(requireContext() , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
             dialog.setContentView(R.layout.request_dialog_box)
             val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
             val btnclose = dialog.findViewById<Button>(R.id.btn_close)
             val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
 
-            val myData = DataHandler().getUserData(requireContext())!!
+            val myData = DataHandler.getUserData(requireContext())!!
 
             btnsend.setOnClickListener {
+                val ref = Firebase.firestore.collection("requests").document()
+                val id = ref.id
                 //request
                 val reqmes : HashMap<String, Any> = hashMapOf(
+                    "id" to id,
                     "sender" to myData.id,
-                    "sender_name" to myData.name,
-                    "sender_uname" to myData.username,
                     "receiver" to userData.id,
                     "message" to tvreq.text.toString(),
-                    "time" to Timestamp.now().toDate().toString(),
-                    "flag" to false
+                    "time" to Timestamp.now(),
+                    "status" to "requested"
                 )
 
-                val ref = Firebase.firestore.collection("request")
-                ref.document(userData.id+myData.id)
+                ref
                     .set(reqmes)
                     .addOnSuccessListener {
                         Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
@@ -77,6 +85,28 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
                     .addOnFailureListener {
                         Log.w(TAG, "Error adding document", it)
                     }
+
+            }
+            btnclose.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+        repbtn.setOnClickListener {
+            val dialog = Dialog(requireContext()  , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
+            dialog.setContentView(R.layout.report_dialog_box)
+            val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
+            val btnclose = dialog.findViewById<Button>(R.id.btn_close)
+            val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
+
+            btnsend.setOnClickListener {
+                //report
+                ReportsManager().reportUser(userData.id, Firebase.auth.currentUser!!.uid, tvreq.text.toString())
+
+                Toast.makeText(context, "Thank you for submitting report, we take action as soon as possible", Toast.LENGTH_LONG).show()
+                dialog.dismiss()
 
             }
             btnclose.setOnClickListener {

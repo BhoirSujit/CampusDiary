@@ -24,6 +24,34 @@
             app:menu="@menu/explore_top_menu"
             app:title="Explore" />
 
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/serachbar"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="10dp"
+
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/serachtext"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:hint="Search Community"
+                android:layout_weight="2"
+                android:drawableStart="@drawable/outline_search_24"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/closeSearchbar"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/close_24px"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
         <View
             android:id="@+id/divider12"
             android:layout_width="match_parent"
@@ -35,87 +63,66 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.search.SearchView
-        android:id="@+id/search_view"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle_view_seachcom"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            android:scrollbars="none"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true">
 
-    </com.google.android.material.search.SearchView>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipmycampus"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="My Campus" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipuniversal"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Universal" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipsub"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="subscribed" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Your Communities"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-    <View
-        android:id="@+id/divider14"
-        android:layout_width="409dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_u_community"
-        android:overScrollMode="never"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider14" />
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Suggested Communities"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_u_community" />
-
-    <View
-        android:id="@+id/divider15"
-        android:layout_width="409dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_community"
-        android:overScrollMode="never"
+        android:id="@+id/recycle_view_community"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider15" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
+    <ImageView
+        android:id="@+id/emptyholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="40dp"
+        android:src="@drawable/no_data_pana"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

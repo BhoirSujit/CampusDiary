@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/bottom_nav_home"
+        android:id="@+id/home2"
         android:enabled="true"
         android:title="Home"
         android:icon="@drawable/home_icon" />
 
     <item
-        android:id="@+id/bottom_nav_community"
+        android:id="@+id/explore"
         android:enabled="true"
         android:title="explore"
         android:icon="@drawable/explore_icon" />
@@ -19,12 +19,12 @@
         android:title="Create"
         android:icon="@drawable/add_box_white_24dp" />
     <item
-        android:id="@+id/bottom_nav_Communication"
+        android:id="@+id/communication"
         android:title="chat"
         android:enabled="true"
         android:icon="@drawable/chat_icon"/>
     <item
-        android:id="@+id/bottom_nav_marketplace"
+        android:id="@+id/marketplace"
         android:title="store"
         android:enabled="true"
         android:icon="@drawable/store_icon"/>

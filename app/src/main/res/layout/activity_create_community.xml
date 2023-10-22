@@ -22,14 +22,13 @@
                 android:id="@+id/chipGrouptags"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/divider5"
-                app:singleSelection="false">
+                app:singleSelection="true">
 
             </com.google.android.material.chip.ChipGroup>
 
@@ -59,16 +58,6 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="409dp"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_editicon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_editicon" />
-
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profilepic"
                 android:layout_width="86dp"
@@ -86,9 +75,10 @@
                 android:id="@+id/btn_editicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:text="Set Icon"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profilepic" />
 
@@ -163,11 +153,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="52dp"
+                android:layout_marginTop="16dp"
                 android:text="Basic info"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_editicon" />
 
             <TextView
                 android:id="@+id/textView6"

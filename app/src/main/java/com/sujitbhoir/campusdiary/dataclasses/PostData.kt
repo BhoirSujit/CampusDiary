@@ -1,10 +1,16 @@
 package com.sujitbhoir.campusdiary.dataclasses
 
-data class postData(
+import com.google.firebase.Timestamp
+import java.util.Date
+
+data class PostData(
     var id : String = "",
     var title : String = "",
     var images : List<String> = listOf(),
     var communityName : String = "",
+    var campus : String = "",
+    var editors :  List<String> = listOf(),
+    var profilePicId : String = "",
     var authUName : String = "",
     var communityId : String = "",
     var context : String = "",

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/iv_profile_pic"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/user"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Name"
-            android:textSize="16dp"
+           android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
 
             app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
             app:layout_constraintTop_toTopOf="@+id/iv_profile_pic" />
@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="status"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintBottom_toBottomOf="@+id/iv_profile_pic"
             app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
             app:layout_constraintTop_toBottomOf="@+id/tv_uname" />
@@ -50,4 +51,4 @@
 
 
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

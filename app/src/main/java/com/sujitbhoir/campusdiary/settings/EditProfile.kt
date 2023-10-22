@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
@@ -12,28 +11,26 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.scale
 import androidx.core.net.toUri
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
+import com.nareshchocha.filepickerlibrary.models.PickMediaType
+import com.nareshchocha.filepickerlibrary.ui.FilePicker
+import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityEditProfileBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseFirestoreHandler
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -45,18 +42,24 @@ class EditProfile : AppCompatActivity() {
 
     private lateinit var binding : ActivityEditProfileBinding
     private val TAG = "editprofileTAG"
-    private lateinit var storage : FirebaseStorage
-    private lateinit var auth : FirebaseAuth
+
     private lateinit var data : UserData
     private lateinit var db : FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var usersManager: UsersManager
 
-    private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
-    private lateinit var firebaseFirestoreHandler: FirebaseFirestoreHandler
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //initialize
+        usersManager = UsersManager(this)
+        data = usersManager.getMyData()!!
+        db = Firebase.firestore
+        auth = Firebase.auth
 
         //back
         binding.toolbar1.setNavigationIcon(R.drawable.arrow_back_24px)
@@ -64,13 +67,9 @@ class EditProfile : AppCompatActivity() {
             finish()
         }
 
-        //initialize
-        data = DataHandler().getUserData(baseContext)!!
-        db = Firebase.firestore
-        auth = Firebase.auth
-        storage = Firebase.storage
-        firebaseStorageHandler = FirebaseStorageHandler(this)
-        firebaseFirestoreHandler = FirebaseFirestoreHandler()
+
+
+
 
         //set fields
         binding.tvFname.text = Editable.Factory.getInstance().newEditable(data.name)
@@ -85,28 +84,60 @@ class EditProfile : AppCompatActivity() {
 
 
         //set image
-        firebaseStorageHandler.setProfilePic(data.profilePicId, binding.profilepic)
+        usersManager.setProfilePic(data.profilePicId, binding.profilepic)
 
 
         //upload pic
         val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
         {
-            if (it.resultCode == RESULT_OK)
+            if (it.resultCode == RESULT_OK && it.data?.data != null)
             {
                 val uri = it.data?.data!!
-                firebaseStorageHandler.uploadProfilePic(uri) {
+
+                usersManager.uploadProfilePic(auth.currentUser!!.uid,uri) {
                     //save profilepicid
-                    firebaseFirestoreHandler.updateProfilePicId(auth.currentUser!!.uid, it)
+                    Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
+                    usersManager.updateUserData(this)
                     {
-                        Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
-                        firebaseStorageHandler.setProfilePic(it, binding.profilepic)
+                        usersManager.setProfilePic(it, binding.profilepic)
                     }
+
+
                 }
             }
         }
+
         binding.btnEditprofilepic.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            resultActivity.launch(intent)
+            resultActivity.launch(
+                FilePicker.Builder(this)
+                    .pickMediaBuild(
+                        PickMediaConfig(
+                            mPickMediaType = PickMediaType.ImageOnly,
+                            allowMultiple = false,
+
+                        )
+                    )
+            )
+        }
+
+        binding.btnRemove.setOnClickListener {
+            //save profilepicid
+            usersManager.removeProfilePic(auth.currentUser!!.uid)
+            {
+                Toast.makeText(this, "Removed Successfully", Toast.LENGTH_LONG).show()
+                usersManager.updateUserData(this)
+                {
+                    usersManager.setProfilePic("", binding.profilepic)
+                }
+
+            }
+        }
+
+        //view image
+        binding.profilepic.setOnClickListener {
+            val intent = Intent(this, ImageViewerActivity::class.java)
+            intent.putExtra("image", usersManager.getProfilePicFile(data.profilePicId) )
+            startActivity(intent)
         }
 
         //discard
@@ -116,92 +147,94 @@ class EditProfile : AppCompatActivity() {
 
         //update
         binding.btnUpdate.setOnClickListener {
+            if (valid())
+            {
+                val username = binding.tvUname.text.toString()
+                isUsernameExists(username) { exists ->
+                    if (exists) {
+                        // The username already exists
+                        // Handle the case accordingly (e.g., show an error message)
+                        Log.d(TAG, "Username exist")
+                        binding.tvUname.error = "Username not available"
+                    } else {
+                        // The username is available
+                        // Proceed with the registration or other desired actions
+                        Log.d(TAG, "Username not exist")
+                        val userinfo : HashMap<String, String> = hashMapOf(
+                            "username" to binding.tvUname.text.toString(),
+                            "name" to binding.tvFname.text.toString(),
+                            "about" to binding.tvAbout.text.toString(),
+                            "gender" to binding.dpGender.text.toString(),
+                            "age" to binding.tvAge.text.toString()
+                        )
 
-            val userinfo : HashMap<String, String> = hashMapOf(
-                "username" to binding.tvUname.text.toString(),
-                "name" to binding.tvFname.text.toString(),
-                "about" to binding.tvAbout.text.toString(),
-                "gender" to binding.dpGender.text.toString(),
-                "age" to binding.tvAge.text.toString()
-            )
+                        db.collection("users")
+                            .document(Firebase.auth.currentUser!!.uid)
+                            .set(userinfo, SetOptions.merge())
+                            .addOnSuccessListener {
+                                Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
+                                usersManager.updateUserData(this)
+                                {
+                                    Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
+                                    finish()
+                                }
 
-            db.collection("users")
-                .document(Firebase.auth.currentUser!!.uid)
-                .set(userinfo, SetOptions.merge())
-                .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-                    DataHandler().updateUserData(baseContext)
-                    Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
-                    finish()
+                            }
+                            .addOnFailureListener {
+                                Log.w(TAG, "Error adding document", it)
+                            }
+
+                    }
                 }
-                .addOnFailureListener {
-                    Log.w(TAG, "Error adding document", it)
-                }
+
+
+            }
+
+
         }
 
     }
 
-    private fun uploadProfilePic(uri : Uri)
+    private fun valid() : Boolean
     {
-        //compress file
-        var bitmap: Bitmap? = null
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-        } catch (e: IOException) {
-            e.printStackTrace()
+
+        binding.tvFname.error = null
+        binding.tvUname.error = null
+
+        if (binding.tvFname.text!!.isBlank())
+        {
+            binding.tvFname.error = "please enter full name"
+            return false
         }
-        val baos = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 20, baos)
+        if (binding.tvUname.text!!.isBlank())
+        {
+            binding.tvUname.error = "username cannot be empty"
+            return false
+        }
 
-        val data = baos.toByteArray()
-
-        val timestamp = Timestamp.now().seconds
-        val profilepicname = Firebase.auth.currentUser!!.uid
-
-        val ref = storage.reference.child("userspic/${profilepicname}.png")
-        ref.putBytes(data)
-            .addOnSuccessListener {
-                Log.d(TAG, "successfull upload")
-
-
-                //load pitcher
-//                val requestOptions = RequestOptions()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .circleCrop()
-//                    .override(100, 100)
-//
-//                Glide.with(this)
-//                    .load(DataHandler().getProfilePic(this, profilepicname))
-//                    .apply(requestOptions)
-//                    .into(binding.profilepic)
-//                    .onLoadFailed(resources.getDrawable(R.drawable.user))
-
-                DataHandler().setProfilePic(this, profilepicname, binding.profilepic)
-
-                Toast.makeText(baseContext, "Uploaded Successfully", Toast.LENGTH_LONG).show()
-
-            }
-            .addOnFailureListener{
-                Log.d(TAG, "unsuccessfull upload")
-            }
+        return  true
     }
 
-    private fun saveProfilePic(profilepicname : String)
-    {
-        val ref = storage.reference.child("userspic/${profilepicname}.png")
-        val file = File(baseContext.filesDir, "$profilepicname.png")
-        ref.getFile(file)
+    private fun isUsernameExists(username: String, callback: (Boolean) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        val usernamesCollection = firestore.collection("users")
+
+        usernamesCollection
+            .whereEqualTo("username", binding.tvUname.text.toString())
+            .get()
             .addOnSuccessListener {
-                Log.d(TAG, "successfull saved")
-                
-                DataHandler().setProfilePic(this, auth.currentUser!!.uid, binding.profilepic)
+                Log.d(TAG, "username  and data ${it}")
+                Log.d(TAG, "username exist ${it.isEmpty}")
+                if (it.isEmpty) {
+                    callback(false)
+                } else {
+                    // Handle the error if necessary
+                    callback(true)
+                }
 
             }
-            .addOnFailureListener{
-                Log.d(TAG, "unsuccessfull saved")
-                Toast.makeText(baseContext, "Something went wrong", Toast.LENGTH_LONG).show()
+            .addOnFailureListener {
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
             }
     }
-
-
 }

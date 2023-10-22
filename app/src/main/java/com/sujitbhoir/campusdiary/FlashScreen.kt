@@ -27,7 +27,7 @@ class FlashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_flash_screen)
 
         auth = Firebase.auth
-
+        auth.currentUser?.reload()
 
 
 
@@ -40,6 +40,9 @@ class FlashScreen : AppCompatActivity() {
                 Log.d("flashact", "current user $currentUser")
                 if (currentUser != null)
                 {
+
+
+
                     val intent = Intent(this@FlashScreen, MainActivity::class.java)
                     startActivity(intent)
                     finish()

@@ -70,9 +70,37 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.App.CornerSize5Percent" parent="">
+
+    </style>
+
+    <style name="Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton"/>
+
+    <style name="Button" parent="Widget.Material3.Button"/>
+
+    <style name="ShapableImageView198" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="android:layout_height">198dp</item>
+        <item name="android:layout_width">match_parent</item>
+
+    </style>
+
+    <style name="ShapableImageView258" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="android:layout_height">258dp</item>
+        <item name="android:layout_width">match_parent</item>
+
+    </style>
+
+    <style name="FullScreenActivity" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="backgroundColor">#000000</item>
+        <item name="colorOnBackground">@color/black</item>
+    </style>
 
 
-    <style name="Theme.CampusDiary" parent="Base.Theme.CampusDiary" />
+
+    <style name="Theme.CampusDiary" parent="Base.Theme.CampusDiary" >
+
+    </style>
+
 
 
 

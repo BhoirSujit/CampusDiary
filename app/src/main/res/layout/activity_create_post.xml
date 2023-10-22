@@ -47,15 +47,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="0dp"
-                android:layout_height="248dp"
+
+
+            <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+                app:showNavigationButtons="false"
+                app:bottomShadowAlpha="0"
+                app:topShadowAlpha="0"
+                app:imageScaleType="centerInside"
+                app:imagePlaceholder="@mipmap/ic_launcher_new_round"
+                app:showCaption="false"
+                android:id="@+id/carousel"
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/postimage1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/image_upload_rafiki"
+                app:layout_constraintBottom_toBottomOf="@+id/carousel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/carousel" />
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout6"
@@ -67,9 +85,10 @@
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView5">
+                app:layout_constraintTop_toBottomOf="@+id/carousel">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Title"
@@ -89,48 +108,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout6">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_context"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Context"
                     android:inputType="textMultiLine"
-                    android:maxLength="500" />
+                    android:maxLength="1500" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:text="Tags"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout8" />
 
             <View
                 android:id="@+id/divider16"
                 android:layout_width="409dp"
                 android:layout_height="1dp"
                 android:layout_marginStart="1dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="1dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupTags"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider16">
-
-            </com.google.android.material.chip.ChipGroup>
+                tools:layout_editor_absoluteY="569dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout8"
@@ -146,13 +141,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
 
                 <AutoCompleteTextView
-                    android:id="@+id/dp_campus"
+                    android:id="@+id/dp_comm"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="campus"
+                    android:hint="Community"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:drawableLeft="@drawable/perm_media_24px"
+                android:drawableTint="?colorOnPrimary"
+
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Add"
+                app:layout_constraintBottom_toBottomOf="@+id/carousel"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

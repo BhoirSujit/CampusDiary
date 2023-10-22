@@ -10,28 +10,32 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.search.SearchBar
-import com.google.android.material.search.SearchView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.adapters.CommunityListAdapter
 import com.sujitbhoir.campusdiary.databinding.FragmentExploreBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
-import com.sujitbhoir.campusdiary.firebasehandlers.FirebaseStorageHandler
+import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
+import kotlinx.coroutines.newFixedThreadPoolContext
 
 
 class explore : Fragment() {
@@ -41,6 +45,7 @@ class explore : Fragment() {
     lateinit var auth : FirebaseAuth
     private lateinit var  firebaseStorageHandler : FirebaseStorageHandler
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,7 +53,8 @@ class explore : Fragment() {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         //
-        data = DataHandler().getUserData(requireContext())!!
+        val communityManager  = CommunityManager(container!!.context)
+        data = DataHandler.getUserData(container.context)!!
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
         val db = Firebase.firestore
         auth = Firebase.auth
@@ -93,222 +99,114 @@ class explore : Fragment() {
 
                 }
 
+                R.id.search -> {
+                    Log.d(TAG, "search mode")
+                    binding.serachbar.visibility = View.VISIBLE
+                    binding.chipGroup.visibility = View.GONE
+
+
+
+                    true
+                }
+
                 else -> false
             }
         }
 
+        val recyclerView = binding.recycleViewCommunity
+
+        recyclerView.layoutManager = LinearLayoutManager(container.context)
+
+        val adaptor = CommunityListAdapter(container.context, ArrayList<CommunityData>())
+        adaptor.setHasStableIds(true)
+        recyclerView.adapter = adaptor
+
+        communityManager.getCommunitiesDataByCampus(data.campus) {
+            adaptor.updateData(it)
+            if (it.isEmpty())
+                binding.emptyholder.visibility = View.VISIBLE
+            else
+                binding.emptyholder.visibility = View.GONE
+        }
+
+        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (binding.chipmycampus.isChecked)
+            {
+                Log.d(TAG, "campus chip")
+                communityManager.getCommunitiesDataByCampus(data.campus) {
+            adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+        }
+
+            }
+            else if (binding.chipuniversal.isChecked)
+            {
+                Log.d(TAG, "uni chip")
+                communityManager.getCommunitiesDataByCampus("Universal") {
+                    adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+                }
+
+            }
+            else if (binding.chipsub.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                communityManager.getCommunitiesDataBySubscribe {
+                    adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+                }
+
+            }
+
+
+        }
+
+
         //community
-
-        db.collection("community")
-//            .where(
-//            Filter.and(
-//            Filter.equalTo("receiver", myData.uid ),
-//            Filter.equalTo("flag", false)
-//        ))
-            .get()
-            .addOnSuccessListener {
-                for (doc in it.documents)
-                {
-                    val comData = doc.toObject(CommunityData::class.java)!!
-                    comsData.add(comData)
-                }
-                Log.d(TAG, "data1 are : ${it.documents}")
-                Log.d(TAG, "data1 are : ${comsData}")
-
-                val recyclerView = binding.recyclerViewCommunity
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                recyclerView.adapter = ComListAdapter(requireContext(), comsData)
+        fun searchCommunity(keyword : String)
+        {
+            Toast.makeText(context, "Keyword is $keyword", Toast.LENGTH_LONG).show()
+            communityManager.getCommunityDataBySearch(keyword)
+            {
+                adaptor.updateData((it))
+                if (it.isEmpty())
+                    binding.emptyholder.visibility = View.VISIBLE
+                else
+                    binding.emptyholder.visibility = View.GONE
             }
-            .addOnFailureListener {
-                Log.d(TAG, "failed to load")
+        }
+
+
+        //search bar
+        binding.serachtext.setOnEditorActionListener { textView, i, keyEvent ->
+            var handled = false
+            if (i == EditorInfo.IME_ACTION_SEARCH)
+            {
+                searchCommunity(textView.text.toString())
+                handled = true
             }
+            return@setOnEditorActionListener handled
+        }
 
-        //your community
-        db.collection("community")
-            .whereEqualTo("admin", Firebase.auth.currentUser!!.uid)
-            .get()
-            .addOnSuccessListener {
-                for (doc in it.documents)
-                {
-                    val comData = doc.toObject(CommunityData::class.java)!!
-                    comsUData.add(comData)
-                }
-                Log.d(TAG, "data1 are : ${it.documents}")
-                Log.d(TAG, "data1 are : ${comsUData}")
-
-                val recyclerView = binding.recyclerViewUCommunity
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                recyclerView.adapter = ComUListAdapter(requireContext(), comsUData)
-            }
-            .addOnFailureListener {
-                Log.d(TAG, "failed to load")
-            }
-
-        //demo purpus
-//        binding.button2.setOnClickListener {
-//            val intent = Intent(requireContext(), CommunityPage::class.java)
-//            intent.putExtra("community_id", "wvpu0KfsLID0cOY4OweL")
-//            startActivity(intent)
-//        }
+        binding.closeSearchbar.setOnClickListener {
+            binding.serachbar.visibility = View.GONE
+            binding.chipGroup.visibility = View.VISIBLE
+        }
 
 
 
-        //
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.explore_top_menu, menu)
-        super.onCreateOptionsMenu(menu,inflater)
-        val search = binding.appBar.menu.getItem(R.id.search)
-        binding.searchView.setupWithSearchBar(search as SearchBar)
-//        val searchView: SearchView = search.actionView as SearchView
-//
-//
-//        searchView.setOnQueryTextListener(object : OnQueryTextListener() {
-//            fun onQueryTextSubmit(query: String?): Boolean {
-//                return false
-//            }
-//
-//            fun onQueryTextChange(newText: String?): Boolean {
-//                // inside on query text change method we are
-//                // calling a method to filter our recycler view.
-//                filter(newText)
-//                return false
-//            }
-//        })
-
-
-    }
-
-
-    class ComListAdapter(val context : Context, private val dataSet: ArrayList<CommunityData>) :
-        RecyclerView.Adapter<ComListAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val comname: TextView
-            val compic : ImageView
-            val comabout : TextView
-            val commember : TextView
-            val joinbtn : Button
-
-
-            init {
-                // Define click listener for the ViewHolder's View
-                comname = view.findViewById(R.id.tv_cname)
-                compic = view.findViewById(R.id.iv_com_pic)
-                comabout = view.findViewById(R.id.tv_comm_about)
-                commember = view.findViewById(R.id.tv_members)
-                joinbtn = view.findViewById(R.id.btn_com_joinedit)
-
-            }
-        }
-
-        // Create new views (invoked by the layout manager)
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            // Create a new view, which defines the UI of the list item
-            val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.community_row_item, viewGroup, false)
-
-            return ViewHolder(view)
-        }
-
-        // Replace the contents of a view (invoked by the layout manager)
-        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-            // Get element from your dataset at this position and replace the
-            // contents of the view with that element
-            viewHolder.comname.text = dataSet[position].name
-            viewHolder.comabout.text = dataSet[position].about
-            viewHolder.commember.text = "${dataSet[position].members.count()} members"
-
-            DataHandler().setCommunityPic(context, dataSet[position].id, viewHolder.compic)
-
-            if (Firebase.auth.currentUser!!.uid in  dataSet[position].members)
-            {
-                viewHolder.joinbtn.text = "Joined"
-
-            }
-
-
-            // Calling the clickListener sent by the constructor
-            viewHolder.itemView.setOnClickListener {
-                val intent = Intent(context, CommunityPage::class.java)
-                intent.putExtra("community_id", dataSet[position].id)
-                context.startActivity(intent)
-            }
-
-        }
-
-        // Return the size of your dataset (invoked by the layout manager)
-        override fun getItemCount() = dataSet.size
-
-    }
-
-
-
-    class ComUListAdapter(val context : Context, private val dataSet: ArrayList<CommunityData>) :
-        RecyclerView.Adapter<ComUListAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val comname: TextView
-            val compic : ImageView
-            val comabout : TextView
-            val commember : TextView
-            val joinbtn : Button
-
-
-            init {
-                // Define click listener for the ViewHolder's View
-                comname = view.findViewById(R.id.tv_cname)
-                compic = view.findViewById(R.id.iv_com_pic)
-                comabout = view.findViewById(R.id.tv_comm_about)
-                commember = view.findViewById(R.id.tv_members)
-                joinbtn = view.findViewById(R.id.btn_com_joinedit)
-
-            }
-        }
-
-        // Create new views (invoked by the layout manager)
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            // Create a new view, which defines the UI of the list item
-            val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.community_row_item, viewGroup, false)
-
-            return ViewHolder(view)
-        }
-
-        // Replace the contents of a view (invoked by the layout manager)
-        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-            // Get element from your dataset at this position and replace the
-            // contents of the view with that element
-            viewHolder.comname.text = dataSet[position].name
-            viewHolder.comabout.text = dataSet[position].about
-            viewHolder.commember.text = "${dataSet[position].members.count()} members"
-            viewHolder.joinbtn.text = "Edit"
-
-            DataHandler().setCommunityPic(context, dataSet[position].id, viewHolder.compic)
-
-            // Calling the clickListener sent by the constructor
-            viewHolder.itemView.setOnClickListener {
-                val intent = Intent(context, CommunityPage::class.java)
-                intent.putExtra("community_id", dataSet[position].id)
-                context.startActivity(intent)
-            }
-
-            viewHolder.joinbtn.setOnClickListener {
-                //edit community
-            }
-
-
-
-        }
-
-        // Return the size of your dataset (invoked by the layout manager)
-        override fun getItemCount() = dataSet.size
-
-    }
 }
 
 
