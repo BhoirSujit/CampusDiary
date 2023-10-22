@@ -18,6 +18,7 @@
             android:layout_height="68dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
+            android:src="@drawable/user"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
@@ -156,19 +157,9 @@
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/report_user" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/report_user">
 
-            <include layout="@layout/feedback_view" />
-        </FrameLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -220,11 +211,12 @@
         </LinearLayout>
 
         <LinearLayout
+
             android:id="@+id/report_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="8dp"

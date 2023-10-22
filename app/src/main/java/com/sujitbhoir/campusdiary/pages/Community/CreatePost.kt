@@ -53,8 +53,8 @@ class CreatePost : AppCompatActivity() {
         }
 
         //set tags
-        val taglist = arrayOf("Astrology","Writing", "Singing", "Painting", "Drawing","Fitness","NCC","Yoga","Gym","Cooking","Nature","Poetry","Travelling","Dance","Books","Cricket","Coding")
-        AddChipsInView(taglist, binding.chipGroupTags)
+        //val taglist = resources.getStringArray(R.array.CommunityCategory)
+        //AddChipsInView(taglist, binding.chipGroupTags)
 
 
         FBFirestore.getCommunitiesData(Firebase.auth.currentUser!!.uid)
@@ -77,8 +77,8 @@ class CreatePost : AppCompatActivity() {
             binding.dpComm.setAdapter(commAdapter)
         }
 
-        val launcher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
                 if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                     // Use the uri to load the image
                     it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
@@ -107,12 +107,15 @@ class CreatePost : AppCompatActivity() {
 
         binding.btnAdd.setOnClickListener{
 
-            launcher.launch(
+            resultActivity.launch(
                 FilePicker.Builder(this)
-                    .pickMediaBuild(PickMediaConfig(
-                        mPickMediaType = PickMediaType.ImageOnly,
-                        allowMultiple = true,
-                    ))
+                    .pickMediaBuild(
+                        PickMediaConfig(
+                            mPickMediaType = PickMediaType.ImageOnly,
+                            allowMultiple = true,
+
+                            )
+                    )
             )
 
         }
@@ -123,7 +126,16 @@ class CreatePost : AppCompatActivity() {
 
         //post
         binding.btnUpdate.setOnClickListener{
-            if (valid()) postPost()
+            binding.btnUpdate.isClickable = false
+            if (valid())
+            {
+
+                postPost()
+            }
+            else
+            {
+                binding.btnUpdate.isClickable = true
+            }
         }
 
 
@@ -132,6 +144,21 @@ class CreatePost : AppCompatActivity() {
 
     private fun valid() : Boolean
     {
+
+        binding.tvTitle.error = null
+        binding.dpComm.error = null
+
+        if (binding.tvTitle.text!!.isBlank())
+        {
+            binding.tvTitle.error = "please enter title"
+            return false
+        }
+        if (binding.dpComm.text!!.isBlank())
+        {
+            binding.dpComm.error = "please select community"
+            return false
+        }
+
         return  true
     }
 
@@ -142,23 +169,25 @@ class CreatePost : AppCompatActivity() {
             it.name ==  binding.dpComm.text.toString()
         }!!
 
-        val checkedChipIds = binding.chipGroupTags.checkedChipIds
+        //val checkedChipIds = binding.chipGroupTags.checkedChipIds
 
         val tags = ArrayList<String>()
 
-        for (chip in checkedChipIds)
-        {
-            tags.add(findViewById<Chip>(chip).text.toString())
-        }
+//        for (chip in checkedChipIds)
+//        {
+//            tags.add(findViewById<Chip>(chip).text.toString())
+//        }
 
         postsManager.uploadPost(
             title = binding.tvTitle.text.toString(),
             context = binding.tvContext.text.toString(),
             authUName = DataHandler.getUserData(this)?.username.toString(),
             communityName = binding.dpComm.text.toString(),
+            campus = comData.campus,
             communityId = comData.id,
+            editors = Firebase.auth.currentUser!!.uid,
             images = filePaths,
-            tags = tags
+            tags = comData.tags
         ) {
                 Toast.makeText(this, "Post uploaded successfully", Toast.LENGTH_LONG).show()
                 finish()
@@ -170,6 +199,7 @@ class CreatePost : AppCompatActivity() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Don't Have Community")
             .setMessage("For posting post on media you need a community ownership or editorship, If you don't have then create a new community")
+            .setCancelable(false)
             .setPositiveButton("Create"){ a, b ->
                 startActivity( Intent(this, CreateCommunity::class.java))
                 finish()

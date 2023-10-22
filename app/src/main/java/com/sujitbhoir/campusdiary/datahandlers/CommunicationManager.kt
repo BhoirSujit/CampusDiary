@@ -15,6 +15,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -106,6 +107,8 @@ class CommunicationManager(val context: Context) {
 
     fun loadChats(sessionId : String, AfterLoad : (messagesList : ArrayList<MessageData>) -> Unit)
     {
+
+
         this.sessionId = sessionId
         val eventListener : EventListener<QuerySnapshot> =
             EventListener { snapshot, e ->
@@ -125,8 +128,10 @@ class CommunicationManager(val context: Context) {
             }
 
         if (listenerRegistration == null ) {
-            listenerRegistration =  getChatSession(sessionId).orderBy("time").addSnapshotListener(eventListener);
+            listenerRegistration =  getChatSession(sessionId).orderBy("time", Query.Direction.ASCENDING).addSnapshotListener(eventListener);
         }
+
+
 
 //            getChatSession(sessionId).orderBy("time")
 //
@@ -254,7 +259,7 @@ class CommunicationManager(val context: Context) {
             "id" to id,
             "msg" to msg,
             "time" to time,
-            "sender" to Firebase.auth.currentUser!!.uid,
+            "sender" to Firebase.auth.currentUser!!.uid.toString(),
         )
 
         if (img != null)
@@ -266,7 +271,8 @@ class CommunicationManager(val context: Context) {
                     Log.d(TAG, "message send")
 
                     val updatedData = hashMapOf<String, Any>(
-                        "lasttime" to time
+                        "lasttime" to time,
+                        "sender" to Firebase.auth.currentUser!!.uid,
                     )
 
                     if (msg.isBlank())
@@ -289,6 +295,7 @@ class CommunicationManager(val context: Context) {
                 Log.d(TAG, "message send")
 
                 val updatedData = hashMapOf<String, Any>(
+                    "sender" to Firebase.auth.currentUser!!.uid,
                     "lastmsg" to msg,
                     "lasttime" to time
                 )
@@ -317,7 +324,19 @@ class CommunicationManager(val context: Context) {
             .delete()
             .addOnSuccessListener {
                 Log.d(TAG, "message deleted success fully")
-                Toast.makeText(context, "Message deleted successfully", Toast.LENGTH_SHORT).show()
+                db.collection("sessions").document(sessionId)
+                val updatedData = hashMapOf<String, Any>(
+                    "lastmsg" to "message was deleted",
+                    "sender" to Firebase.auth.currentUser!!.uid,
+                )
+
+                db.collection("sessions").document(sessionId)
+                    .set(updatedData, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Log.d(TAG, "session updated")
+                        Toast.makeText(context, "Message deleted successfully", Toast.LENGTH_SHORT).show()
+                    }
+
             }
             .addOnFailureListener{
                 Log.d(TAG, "message deleted success fully")

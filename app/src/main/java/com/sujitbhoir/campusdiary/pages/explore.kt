@@ -10,9 +10,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +35,7 @@ import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
+import kotlinx.coroutines.newFixedThreadPoolContext
 
 
 class explore : Fragment() {
@@ -96,45 +99,114 @@ class explore : Fragment() {
 
                 }
 
+                R.id.search -> {
+                    Log.d(TAG, "search mode")
+                    binding.serachbar.visibility = View.VISIBLE
+                    binding.chipGroup.visibility = View.GONE
+
+
+
+                    true
+                }
+
                 else -> false
             }
         }
 
+        val recyclerView = binding.recycleViewCommunity
+
+        recyclerView.layoutManager = LinearLayoutManager(container.context)
+
+        val adaptor = CommunityListAdapter(container.context, ArrayList<CommunityData>())
+        adaptor.setHasStableIds(true)
+        recyclerView.adapter = adaptor
+
+        communityManager.getCommunitiesDataByCampus(data.campus) {
+            adaptor.updateData(it)
+            if (it.isEmpty())
+                binding.emptyholder.visibility = View.VISIBLE
+            else
+                binding.emptyholder.visibility = View.GONE
+        }
+
+        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (binding.chipmycampus.isChecked)
+            {
+                Log.d(TAG, "campus chip")
+                communityManager.getCommunitiesDataByCampus(data.campus) {
+            adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+        }
+
+            }
+            else if (binding.chipuniversal.isChecked)
+            {
+                Log.d(TAG, "uni chip")
+                communityManager.getCommunitiesDataByCampus("Universal") {
+                    adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+                }
+
+            }
+            else if (binding.chipsub.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                communityManager.getCommunitiesDataBySubscribe {
+                    adaptor.updateData(it)
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+                }
+
+            }
+
+
+        }
+
 
         //community
-        val recyclerView = binding.recycleViewCommunity
-        communityManager.getCommunitiesData {
-
-            recyclerView.layoutManager = LinearLayoutManager(container.context)
-            recyclerView.adapter = CommunityListAdapter(container.context, it)
+        fun searchCommunity(keyword : String)
+        {
+            Toast.makeText(context, "Keyword is $keyword", Toast.LENGTH_LONG).show()
+            communityManager.getCommunityDataBySearch(keyword)
+            {
+                adaptor.updateData((it))
+                if (it.isEmpty())
+                    binding.emptyholder.visibility = View.VISIBLE
+                else
+                    binding.emptyholder.visibility = View.GONE
+            }
         }
+
+
+        //search bar
+        binding.serachtext.setOnEditorActionListener { textView, i, keyEvent ->
+            var handled = false
+            if (i == EditorInfo.IME_ACTION_SEARCH)
+            {
+                searchCommunity(textView.text.toString())
+                handled = true
+            }
+            return@setOnEditorActionListener handled
+        }
+
+        binding.closeSearchbar.setOnClickListener {
+            binding.serachbar.visibility = View.GONE
+            binding.chipGroup.visibility = View.VISIBLE
+        }
+
+
 
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.explore_top_menu, menu)
-        super.onCreateOptionsMenu(menu,inflater)
-        val search = binding.appBar.menu.getItem(R.id.search)
-
-//        val searchView: SearchView = search.actionView as SearchView
-//
-//
-//        searchView.setOnQueryTextListener(object : OnQueryTextListener() {
-//            fun onQueryTextSubmit(query: String?): Boolean {
-//                return false
-//            }
-//
-//            fun onQueryTextChange(newText: String?): Boolean {
-//                // inside on query text change method we are
-//                // calling a method to filter our recycler view.
-//                filter(newText)
-//                return false
-//            }
-//        })
-
-
-    }
 }
 
 

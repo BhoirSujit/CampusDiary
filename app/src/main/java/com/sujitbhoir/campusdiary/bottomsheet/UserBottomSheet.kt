@@ -13,10 +13,12 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.ReportsManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
@@ -83,6 +85,28 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
                     .addOnFailureListener {
                         Log.w(TAG, "Error adding document", it)
                     }
+
+            }
+            btnclose.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+        repbtn.setOnClickListener {
+            val dialog = Dialog(requireContext()  , com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
+            dialog.setContentView(R.layout.report_dialog_box)
+            val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
+            val btnclose = dialog.findViewById<Button>(R.id.btn_close)
+            val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
+
+            btnsend.setOnClickListener {
+                //report
+                ReportsManager().reportUser(userData.id, Firebase.auth.currentUser!!.uid, tvreq.text.toString())
+
+                Toast.makeText(context, "Thank you for submitting report, we take action as soon as possible", Toast.LENGTH_LONG).show()
+                dialog.dismiss()
 
             }
             btnclose.setOnClickListener {

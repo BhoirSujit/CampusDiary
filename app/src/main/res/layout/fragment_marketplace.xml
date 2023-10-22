@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".pages.marketplace.Marketplace">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -26,6 +27,35 @@
             android:elevation="10dp"
             app:menu="@menu/marketplace_top_menu"
             app:title="Marketplace" />
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/serachbar"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="10dp"
+
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/serachtext"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:hint="Search Product"
+                android:layout_weight="2"
+                android:drawableStart="@drawable/outline_search_24"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/closeSearchbar"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/close_24px"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
 
         <View
             android:id="@+id/divider21"
@@ -58,6 +88,7 @@
                     app:singleSelection="true"
                     android:scrollbars="none"
                     app:singleLine="true"
+                    app:selectionRequired="true"
                     android:paddingHorizontal="8dp"
                     android:id="@+id/chip_group"
                     android:layout_width="match_parent"
@@ -66,15 +97,65 @@
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.Material3.Chip.Assist"
+                        style="@style/Widget.Material3.Chip.Assist.Elevated"
                         app:chipIcon="@drawable/tune_24px"
                         android:text="filter"/>
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipall"
+                        android:layout_width="wrap_content"
+                        android:checked="true"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="All"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipbooks"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:text="All"/>
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="books"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipcommonStuff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="common Stuff"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipelectronics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="electronics"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipITGadgets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="IT Gadgets"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipcloths"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="cloths"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipArtcrafts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="Arts &amp; crafts"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipsport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="sport"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipother"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:text="other"/>
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
@@ -86,6 +167,13 @@
                 android:layout_height="match_parent">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <ImageView
+                android:visibility="gone"
+                android:padding="40dp"
+                android:src="@drawable/empty_pana"
+                android:layout_width="match_parent"
+                android:id="@+id/emptyholder"
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
 

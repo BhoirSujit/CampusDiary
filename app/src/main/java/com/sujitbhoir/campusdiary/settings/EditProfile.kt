@@ -147,31 +147,94 @@ class EditProfile : AppCompatActivity() {
 
         //update
         binding.btnUpdate.setOnClickListener {
+            if (valid())
+            {
+                val username = binding.tvUname.text.toString()
+                isUsernameExists(username) { exists ->
+                    if (exists) {
+                        // The username already exists
+                        // Handle the case accordingly (e.g., show an error message)
+                        Log.d(TAG, "Username exist")
+                        binding.tvUname.error = "Username not available"
+                    } else {
+                        // The username is available
+                        // Proceed with the registration or other desired actions
+                        Log.d(TAG, "Username not exist")
+                        val userinfo : HashMap<String, String> = hashMapOf(
+                            "username" to binding.tvUname.text.toString(),
+                            "name" to binding.tvFname.text.toString(),
+                            "about" to binding.tvAbout.text.toString(),
+                            "gender" to binding.dpGender.text.toString(),
+                            "age" to binding.tvAge.text.toString()
+                        )
 
-            val userinfo : HashMap<String, String> = hashMapOf(
-                "username" to binding.tvUname.text.toString(),
-                "name" to binding.tvFname.text.toString(),
-                "about" to binding.tvAbout.text.toString(),
-                "gender" to binding.dpGender.text.toString(),
-                "age" to binding.tvAge.text.toString()
-            )
+                        db.collection("users")
+                            .document(Firebase.auth.currentUser!!.uid)
+                            .set(userinfo, SetOptions.merge())
+                            .addOnSuccessListener {
+                                Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
+                                usersManager.updateUserData(this)
+                                {
+                                    Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
+                                    finish()
+                                }
 
-            db.collection("users")
-                .document(Firebase.auth.currentUser!!.uid)
-                .set(userinfo, SetOptions.merge())
-                .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-                    usersManager.updateUserData(this)
-                    {
-                        Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
-                        finish()
+                            }
+                            .addOnFailureListener {
+                                Log.w(TAG, "Error adding document", it)
+                            }
+
                     }
+                }
 
-                }
-                .addOnFailureListener {
-                    Log.w(TAG, "Error adding document", it)
-                }
+
+            }
+
+
         }
 
+    }
+
+    private fun valid() : Boolean
+    {
+
+        binding.tvFname.error = null
+        binding.tvUname.error = null
+
+        if (binding.tvFname.text!!.isBlank())
+        {
+            binding.tvFname.error = "please enter full name"
+            return false
+        }
+        if (binding.tvUname.text!!.isBlank())
+        {
+            binding.tvUname.error = "username cannot be empty"
+            return false
+        }
+
+        return  true
+    }
+
+    private fun isUsernameExists(username: String, callback: (Boolean) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        val usernamesCollection = firestore.collection("users")
+
+        usernamesCollection
+            .whereEqualTo("username", binding.tvUname.text.toString())
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "username  and data ${it}")
+                Log.d(TAG, "username exist ${it.isEmpty}")
+                if (it.isEmpty) {
+                    callback(false)
+                } else {
+                    // Handle the error if necessary
+                    callback(true)
+                }
+
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
+            }
     }
 }

@@ -79,6 +79,19 @@ class PostsManager(private val context: Context) {
         }
     }
 
+    fun deletePost(id : String)
+    {
+        ref.document(id)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "post deleted with id : $it")
+
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "post denied  : $it")
+            }
+    }
+
     fun getPostData(id : String, afterLoad : (postData : PostData) -> Unit)
     {
         ref.document(id)
@@ -111,8 +124,10 @@ class PostsManager(private val context: Context) {
         title : String,
         context : String,
         communityName : String,
+        campus : String,
         images : ArrayList<String>,
         communityId : String,
+        editors : String,
         tags : List<String>,
         authUName : String,
         afterPosting : (postId : String) -> Unit
@@ -128,6 +143,8 @@ class PostsManager(private val context: Context) {
         for (i in images)
             imagesIds.add(uniqueId())
 
+        val ed = listOf<String>(editors)
+
 
         val data = hashMapOf<String, Any>(
             "id" to id,
@@ -136,6 +153,8 @@ class PostsManager(private val context: Context) {
             "authUName" to authUName,
             "communityId" to communityId,
             "communityName" to communityName,
+            "editors" to ed,
+            "campus" to campus,
             "context" to context,
             "creationDate" to Timestamp.now().seconds.toString(),
             "tags" to tags,
@@ -240,11 +259,16 @@ class PostsManager(private val context: Context) {
 
             image.addView(newimg)
 
+            val circularProgressDrawable = CircularProgressDrawable(context)
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
 
             Glide.with(context)
                 .load(bitmap)
                 .centerCrop()
-                .placeholder(R.drawable.college_campus_rafiki)
+                .placeholder(circularProgressDrawable)
                 .into(newimg)
 
 

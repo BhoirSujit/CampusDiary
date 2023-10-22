@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ClipData
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -26,6 +28,7 @@ import com.google.android.gms.common.data.DataHolder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -41,6 +44,7 @@ import com.sujitbhoir.campusdiary.dataclasses.ReqData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
+import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
 import java.io.File
 import java.io.FileOutputStream
 
@@ -70,6 +74,25 @@ class CreateChat : AppCompatActivity() {
         }
 
         //initialize
+        fun checkforreq()
+        {
+            Firebase.firestore.collection("requests").where(Filter.and(
+                Filter.equalTo("receiver", Firebase.auth.currentUser!!.uid ),
+                Filter.equalTo("status", "requested")
+            )).count().get(AggregateSource.SERVER).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Count fetched successfully
+                    val snapshot = task.result
+                    Log.d(TAG, "Count: ${snapshot.count}")
+                    if (snapshot.count.toInt() != 0 )
+                    Toast.makeText(this, "You have ${snapshot.count} requests. please check it out", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(TAG, "Count failed: ", task.getException())
+                }
+            }
+        }
+
+        checkforreq()
 
         val auth = Firebase.auth
 
@@ -92,6 +115,82 @@ class CreateChat : AppCompatActivity() {
 
         }
 
+        //on click listener
+        binding.toolbar1.setOnMenuItemClickListener {
+            when (it.itemId) {
+
+                R.id.search -> {
+                    Log.d(TAG, "search mode")
+                    binding.serachbar.visibility = View.VISIBLE
+                    binding.chipGroup.visibility = View.GONE
+
+
+
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+
+        //search bar
+        binding.serachtext.setOnEditorActionListener { textView, i, keyEvent ->
+            var handled = false
+            if (i == EditorInfo.IME_ACTION_SEARCH)
+            {
+                loadBySearch(textView.text.toString())
+                handled = true
+            }
+            return@setOnEditorActionListener handled
+        }
+
+        binding.closeSearchbar.setOnClickListener {
+            binding.serachbar.visibility = View.GONE
+            binding.chipGroup.visibility = View.VISIBLE
+        }
+
+
+    }
+
+    private fun loadBySearch(keyword : String)
+    {
+        requestListAdapter?.clearList()
+        val usersData = ArrayList<UserData>()
+
+        val db = Firebase.firestore
+        //suggest //get data
+        db.collection("users")
+            .orderBy("name")
+            .startAt(keyword).endAt(keyword + "\uf8ff")
+
+            .get()
+            .addOnSuccessListener {
+                //parse data
+                for (doc in it.documents)
+                {
+                    val userData = doc.toObject(UserData::class.java)!!
+                    if (userData.id != Firebase.auth.currentUser!!.uid)
+                        usersData.add(userData)
+                }
+                Log.d(TAG, "data are : ${it.documents}")
+                Log.d(TAG, "data are : ${usersData}")
+
+
+
+                usersListAdapter = UsersListAdapter(this, usersData) {v, i ->
+                    val userBottomSheet = UserBottomSheet(usersData[i])
+                    userBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+                }
+
+                recyclerView.adapter = usersListAdapter
+
+
+
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
     }
 
     @SuppressLint("NotifyDataSetChanged")

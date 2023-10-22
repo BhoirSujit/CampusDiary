@@ -53,6 +53,76 @@ class CommunityManager(val context : Context) {
         }
     }
 
+    fun getCommunitiesDataByCampus(campus : String, afterLoad: (arr : ArrayList<CommunityData>) -> Unit) {
+
+        val arr = ArrayList<CommunityData>()
+
+        communityRef.whereEqualTo("campus", campus)
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val data = doc.toObject(CommunityData::class.java)!!
+                    arr.add(data)
+                }
+
+                afterLoad(arr)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
+    }
+
+    fun getCommunitiesDataBySubscribe(afterLoad: (arr : ArrayList<CommunityData>) -> Unit) {
+
+        val arr = ArrayList<CommunityData>()
+
+        communityRef.whereArrayContains("members" , Firebase.auth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val data = doc.toObject(CommunityData::class.java)!!
+                    arr.add(data)
+                }
+
+                afterLoad(arr)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
+    }
+
+    fun getCommunityDataBySearch(search : String, afterLoad: (arr : ArrayList<CommunityData>) -> Unit) {
+
+        val arr = ArrayList<CommunityData>()
+
+        communityRef
+            .orderBy("name")
+            .startAt(search).endAt(search + "\uf8ff")
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val proData = doc.toObject(CommunityData::class.java)!!
+                    arr.add(proData)
+                }
+
+                afterLoad(arr)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
+    }
+
+
+
 
     fun getCommunitiesData(afterLoad: (arr : ArrayList<CommunityData>) -> Unit) {
 
@@ -109,7 +179,8 @@ class CommunityManager(val context : Context) {
             "about" to about,
             "campus" to campus,
             "admin" to admin,
-            "members" to listOf<String>(admin),
+            "members" to listOf<String>(),
+            "editors" to listOf<String>(admin),
             "tags"  to tags
         )
 
@@ -211,13 +282,16 @@ class CommunityManager(val context : Context) {
             }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+
+
     fun setProfilePic(profilePicID : String, image : ImageView)
     {
+        Log.d(TAG, "trying to get : $profilePicID for com pic")
         if (profilePicID.isBlank())
         {
             image.setImageDrawable(context.resources.getDrawable(R.drawable.user))
-        return}
+            return
+        }
 
         val circularProgressDrawable = CircularProgressDrawable(context)
         circularProgressDrawable.strokeWidth = 5f

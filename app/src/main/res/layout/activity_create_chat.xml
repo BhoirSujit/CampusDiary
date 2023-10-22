@@ -23,6 +23,33 @@
 
             app:title="New Message" />
 
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/serachbar"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/serachtext"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:hint="Search User"
+                android:layout_weight="2"
+                android:drawableStart="@drawable/outline_search_24"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/closeSearchbar"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/close_24px"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -19,7 +19,7 @@ import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CommunityPage
 
-class CommunityListAdapter(val context : Context, private val dataSet: ArrayList<CommunityData>) :
+class CommunityListAdapter(val context : Context, private var dataSet: ArrayList<CommunityData>) :
     RecyclerView.Adapter<CommunityListAdapter.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return position
@@ -27,6 +27,12 @@ class CommunityListAdapter(val context : Context, private val dataSet: ArrayList
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
+    }
+
+    fun updateData(dataSet: ArrayList<CommunityData>)
+    {
+        this.dataSet = dataSet
+        this.notifyDataSetChanged()
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -75,7 +81,11 @@ class CommunityListAdapter(val context : Context, private val dataSet: ArrayList
         viewHolder.commember.text = "${dataSet[position].members.count()} members"
         viewHolder.campus.text = dataSet[position].campus
 
-        CommunityManager(context).setProfilePic(dataSet[position].communityPicId, viewHolder.compic)
+
+            CommunityManager(context).setProfilePic(dataSet[position].communityPicId, viewHolder.compic)
+
+
+
 
         val it = dataSet[position]
 
