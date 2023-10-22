@@ -8,6 +8,8 @@ data class PostData(
     var title : String = "",
     var images : List<String> = listOf(),
     var communityName : String = "",
+    var campus : String = "",
+    var editors :  List<String> = listOf(),
     var profilePicId : String = "",
     var authUName : String = "",
     var communityId : String = "",

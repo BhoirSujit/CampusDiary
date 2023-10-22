@@ -16,6 +16,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Filter
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
@@ -38,6 +41,7 @@ class Home : Fragment() {
     private var view : View? = null
 
     private var postArr : ArrayList<PostData>? = null
+    var reqComData =  HashMap<String, CommunityData>()
     private  lateinit var  postListAdapter : PostListAdapter
     private var  communityData = HashMap<String, CommunityData>()
 
@@ -47,7 +51,7 @@ class Home : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         cont = container!!.context
-        postListAdapter = PostListAdapter(cont, ArrayList<PostData>())
+        postListAdapter = PostListAdapter(cont)
         postListAdapter.setHasStableIds(true)
 
         firebaseStorageHandler = FirebaseStorageHandler(requireContext())
@@ -91,6 +95,8 @@ class Home : Fragment() {
             }
         }
 
+        binding.chipall.isChecked = true
+
         //add interest chip
         fun AddChipsInView(chipslist : List<String>, view : ChipGroup, style : Int = com.google.android.material.R.style.Widget_Material3_Chip_Suggestion)
         {
@@ -103,7 +109,7 @@ class Home : Fragment() {
             }
         }
         val taglist = data.interests
-        AddChipsInView(taglist, binding.chipGroup2)
+        //AddChipsInView(taglist, binding.chipGroup2)
         Log.d(TAG, "interst are : ${data.interests}")
 
 
@@ -111,65 +117,178 @@ class Home : Fragment() {
         binding.recyclePost.layoutManager = LinearLayoutManager(cont)
         binding.recyclePost.adapter = postListAdapter
 
+        //changes listener
+
+
+        binding.chipGroup2.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (binding.chipall.isChecked)
+            {
+                Log.d(TAG, "all chip")
+                getPost(db.collection("posts"))
+                {
+                    loadPost()
+                }
+
+            }
+            else if (binding.chipfollowing.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                CommunityManager(cont).getCommunitiesDataBySubscribe {
+                    val filters = ArrayList<Filter>()
+                    for (data in it)
+                    {
+                        Log.d(TAG, "filerts for posts are : ${data.id}")
+                        filters.add(Filter.equalTo("communityId",data.id))
+
+                    }
+
+                    var f = arrayOfNulls<Filter>(filters.size)
+                    f = filters.toArray(f)
+                    if (f.isNotEmpty())
+                    {
+                        getPost(db.collection("posts").where( Filter.or(
+                            *f
+                        )))
+                        {
+                            loadPost()
+                        }
+                    }else
+                    {
+                        postArr!!.clear()
+                        loadPost()
+                    }
+
+
+                }
+
+
+            }
+            else if (binding.chipowncom.isChecked)
+            {
+                Log.d(TAG, "owncampus chip")
+                getPost(db.collection("posts").whereEqualTo("campus", data.campus))
+                {
+                    loadPost()
+                }
+            }
+            else if (binding.ownposts.isChecked)
+            {
+                Log.d(TAG, "own chip")
+                getPost(db.collection("posts").whereEqualTo("authUName", data.username))
+                {
+                    loadPost()
+                }
+            }
+
+
+        }
+
         loadPost()
 
 
         return binding.root
     }
 
-    fun getCommunityPics()
-    {
 
-    }
+    private val limit : Long = 10
 
-    fun getPost(afterLoad : () -> Unit)
+
+    private fun getPost(ref : Query, afterLoad : () -> Unit)
     {
         val db = Firebase.firestore
         val auth = Firebase.auth
 
-        if (postArr == null)
-        {
-            postArr = ArrayList<PostData>()
-            db.collection("posts")
-                .get()
-                .addOnSuccessListener {
-                    Log.d(TAG, "data are : ${it.documents}")
 
-                    for (doc in it.documents)
-                    {
-                        val pData = doc.toObject(PostData::class.java) as PostData
-                        postArr!!.add(pData)
+            var templimit = limit
+
+            fun fire()
+            {
+                binding.loadmorebutton.visibility = View.GONE
+                postArr = ArrayList<PostData>()
+                reqComData = HashMap<String, CommunityData>()
+
+                ref.limit(templimit)
+                    .get()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "data are : ${it.documents}")
+
+
+                        for (doc in it.documents)
+                        {
+                            val pData = doc.toObject(PostData::class.java) as PostData
+                            postArr!!.add(pData)
+                        }
+
+                        val tmpArr = ArrayList<String>()
+                        for (pd in postArr!!)
+                        {
+                            tmpArr.add(pd.communityId)
+                        }
+                        val s = LinkedHashSet<String>(tmpArr)
+
+                        CommunityManager(cont).getCommunitiesData(ArrayList(s)) {
+                            Log.d("TAG", "data found : "+it)
+                            communityData = it
+
+                            Log.d(TAG, "post size and tmp are : ${postArr!!.size} = ${templimit.toInt()}")
+
+                            //show button
+                            if (postArr!!.size == templimit.toInt())
+                            {
+                                binding.loadmorebutton.visibility = View.VISIBLE
+                            }
+
+                            afterLoad()
+
+                        }
+
+
+
+
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "failed to load")
                     }
 
-                    afterLoad()
-                }
-                .addOnFailureListener {
-                    Log.d(TAG, "failed to load")
-                }
+
+            }
+
+        fire()
+
+
+
+        binding.loadmorebutton.setOnClickListener {
+            templimit += limit
+            fire()
         }
+
+
+
+
     }
 
     fun loadPost()
     {
+        val db = Firebase.firestore
         if (postArr == null)
         {
-            getPost {
-                val tmpArr = ArrayList<String>()
-                for (pd in postArr!!)
-                {
-                    tmpArr.add(pd.communityId)
-                }
-                val s = LinkedHashSet<String>(tmpArr)
+            getPost(db.collection("posts")) {
 
-                CommunityManager(cont).getCommunitiesData(ArrayList(s)) {
-                    Log.d("TAG", "data found : "+it)
-                    postListAdapter.updateData(postArr!!, it)
-                }
+                    postListAdapter.updateData(postArr!!, communityData)
+                if (postArr!!.isEmpty())
+                    binding.emptyholder.visibility = View.VISIBLE
+                else
+                    binding.emptyholder.visibility = View.GONE
+
 
             }
             return
         }
         postListAdapter.updateData(postArr!!, communityData)
+        if (postArr!!.isEmpty())
+            binding.emptyholder.visibility = View.VISIBLE
+        else
+            binding.emptyholder.visibility = View.GONE
 
     }
 }

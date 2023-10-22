@@ -12,20 +12,29 @@
     android:paddingBottom="4dp">
 
     <LinearLayout
+        android:id="@+id/infocont"
         android:layout_width="match_parent"
         android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:padding="16dp"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/information_chat"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Information"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/information_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="Information"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.card.MaterialCardView>
+
+
     </LinearLayout>
 
 

@@ -90,6 +90,7 @@ class RegisterProduct : AppCompatActivity() {
         }
 
         binding.btnUpdate.setOnClickListener{
+            binding.btnUpdate.isClickable = false
             register()
         }
 
@@ -129,10 +130,57 @@ class RegisterProduct : AppCompatActivity() {
 
             }
         }
+        else
+        {
+            binding.btnUpdate.isClickable = true
+        }
     }
 
     fun validate() : Boolean
     {
+        binding.tvName.error = null
+        binding.tvContact.error = null
+        binding.tvPrize.error = null
+        binding.tvDetails.error = null
+        binding.dpCondition.error = null
+
+    if (binding.tvName.text!!.isBlank())
+    {
+        binding.tvName.error = "please enter product name"
+        return false
+    }
+        if (binding.tvContact.text!!.isBlank())
+        {
+            binding.tvContact.error = "please enter your contact"
+            return false
+        }
+        if (binding.tvPrize.text!!.isBlank())
+        {
+            binding.tvPrize.error = "please enter product prize"
+            return false
+        }
+        if (binding.tvDetails.text!!.isBlank())
+        {
+            binding.tvDetails.error = "please enter product details"
+            return false
+        }
+        if (binding.tvName.text!!.isBlank())
+        {
+            binding.tvName.error = "please select product condition"
+            return false
+        }
+
+        if (binding.chipGroupTags.checkedChipIds.isEmpty())
+        {
+            Toast.makeText(this, "Please select category", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (filePaths.isEmpty())
+        {
+            Toast.makeText(this, "Please select at least one product image", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
         return true
     }
 

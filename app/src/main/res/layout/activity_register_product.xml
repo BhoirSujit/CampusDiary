@@ -243,6 +243,7 @@
                 android:id="@+id/chipGroupTags"
                 app:singleSelection="true"
                 android:layout_width="0dp"
+                app:selectionRequired="true"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"

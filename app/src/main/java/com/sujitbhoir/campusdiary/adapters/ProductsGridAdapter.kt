@@ -1,5 +1,6 @@
 package com.sujitbhoir.campusdiary.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -18,7 +19,7 @@ import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
 import com.sujitbhoir.campusdiary.pages.marketplace.ProductPage
 import org.w3c.dom.Text
 
-class ProductsGridAdapter(private val context : Context,val dataSet: ArrayList<ProductData>) :
+class ProductsGridAdapter(private val context : Context,var dataSet: ArrayList<ProductData>) :
     RecyclerView.Adapter<ProductsGridAdapter.ViewHolder>(){
     override fun getItemViewType(position: Int): Int {
         return position
@@ -27,6 +28,14 @@ class ProductsGridAdapter(private val context : Context,val dataSet: ArrayList<P
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(dataSet: ArrayList<ProductData>)
+    {
+        this.dataSet = dataSet
+        this.notifyDataSetChanged()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val img : ImageView
         val proName : TextView

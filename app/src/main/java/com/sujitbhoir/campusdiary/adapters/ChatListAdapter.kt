@@ -41,6 +41,7 @@ class ChatListAdapter(val context : Context, val sessionId : String,val required
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val informationmsg : TextView
+        val infoContainer : LinearLayout
 
         //own
         val own_layout : LinearLayout
@@ -60,6 +61,7 @@ class ChatListAdapter(val context : Context, val sessionId : String,val required
         init {
             // Define click listener for the ViewHolder's View
            informationmsg = view.findViewById(R.id.information_chat)
+            infoContainer = view.findViewById(R.id.infocont)
 
             //own
             own_layout  = view.findViewById(R.id.own_layout)
@@ -107,11 +109,12 @@ class ChatListAdapter(val context : Context, val sessionId : String,val required
 
         if (tf.isDiffDay(dataSet[kotlin.math.abs(if (position <= 0 ) 0 else position-1)].time , dataSet[position].time))
         {
-            viewHolder.informationmsg.visibility = View.VISIBLE
-            viewHolder.informationmsg.text = tf.getFormatedTime(dataSet[position].time)
+            viewHolder.infoContainer.visibility = View.VISIBLE
+            viewHolder.informationmsg.text = tf.getFormatedDate(dataSet[position].time)
         }
 
-
+        viewHolder.own_layout.visibility = View.GONE
+        viewHolder.other_layout.visibility = View.GONE
 
         if (dataSet[position].sender == Firebase.auth.currentUser!!.uid)
         {

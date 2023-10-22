@@ -12,6 +12,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,8 @@ import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
+import com.google.common.base.MoreObjects.ToStringHelper
+import com.google.firebase.firestore.Filter
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.adapters.ProductsGridAdapter
 import com.sujitbhoir.campusdiary.bottomsheet.MarketplaceBottomSheet
@@ -31,12 +35,15 @@ import com.sujitbhoir.campusdiary.bottomsheet.UserBottomSheet
 import com.sujitbhoir.campusdiary.databinding.FragmentMarketplaceBinding
 import com.sujitbhoir.campusdiary.dataclasses.ProductData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
 import com.sujitbhoir.campusdiary.pages.Profile
+import java.util.ArrayList
 
 
 class Marketplace : Fragment() {
@@ -78,12 +85,12 @@ class Marketplace : Fragment() {
                 view.addView(chip)
             }
         }
-        val taglist = resources.getStringArray(R.array.MarketplaceCategory)
-        AddChipsInView(taglist, binding.chipGroup)
+        //val taglist = resources.getStringArray(R.array.MarketplaceCategory)
+        //AddChipsInView(taglist, binding.chipGroup)
 
 
 
-        firebaseStorageHandler.setProfilePic( data.profilePicId,
+        UsersManager(context).setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -104,16 +111,177 @@ class Marketplace : Fragment() {
         //recycle view
         recyclerView = binding.recycleView
         recyclerView.layoutManager = GridLayoutManager(context, 2)
+        productsGridAdapter = ProductsGridAdapter(context, ArrayList<ProductData>())
+        productsGridAdapter.setHasStableIds(true)
+
 
         marketplaceManager.getProductsData()
         {
 
-            productsGridAdapter = ProductsGridAdapter(context,it)
+            productsGridAdapter.updateData(it)
+
             recyclerView.adapter = productsGridAdapter
+            if (it.isEmpty())
+                binding.emptyholder.visibility = View.VISIBLE
+            else
+                binding.emptyholder.visibility = View.GONE
 
 
 
 
+        }
+
+
+
+        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (binding.chipall.isChecked)
+            {
+                Log.d(TAG, "all chip")
+                marketplaceManager.getProductsData(){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+            }
+            else if (binding.chipArtcrafts.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("Arts &amp; crafts"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipbooks.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("books"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipcommonStuff.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("common Stuff"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipcloths.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("cloths"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipelectronics.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("electronics"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipITGadgets.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("IT Gadgets"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipsport.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("sport"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+            else if (binding.chipother.isChecked)
+            {
+                Log.d(TAG, "sub chip")
+                marketplaceManager.getProductsDataByCategory("other"){
+                    productsGridAdapter.updateData((it))
+                    if (it.isEmpty())
+                        binding.emptyholder.visibility = View.VISIBLE
+                    else
+                        binding.emptyholder.visibility = View.GONE
+
+                }
+
+
+            }
+
+
+
+
+        }
+
+        binding.closeSearchbar.setOnClickListener {
+            binding.serachbar.visibility = View.GONE
+            binding.chipGroup.visibility = View.VISIBLE
+        }
+
+        fun serchProduct(keyword : String)
+        {
+            Toast.makeText(context, "Keyword is $keyword", Toast.LENGTH_LONG).show()
+            marketplaceManager.getProductDataBySearch(keyword)
+            {
+                productsGridAdapter.updateData((it))
+                if (it.isEmpty())
+                    binding.emptyholder.visibility = View.VISIBLE
+                else
+                    binding.emptyholder.visibility = View.GONE
+
+            }
         }
 
 
@@ -134,8 +302,30 @@ class Marketplace : Fragment() {
 
                 }
 
+                R.id.search -> {
+                    Log.d(TAG, "search mode")
+                    binding.serachbar.visibility = View.VISIBLE
+                    binding.chipGroup.visibility = View.GONE
+
+
+
+                    true
+                }
+
                 else -> false
             }
+        }
+
+
+        //search bar
+        binding.serachtext.setOnEditorActionListener { textView, i, keyEvent ->
+            var handled = false
+            if (i == EditorInfo.IME_ACTION_SEARCH)
+            {
+                serchProduct(textView.text.toString())
+                handled = true
+            }
+            return@setOnEditorActionListener handled
         }
 
 
@@ -148,52 +338,7 @@ class Marketplace : Fragment() {
     }
 
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
 
-        Log.d(TAG, "you menu entered")
-        val search = menu.findItem(R.id.search)
-        val searchView  = search.actionView as androidx.appcompat.widget.SearchView
-
-        searchView.setOnQueryTextListener(object : OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d(TAG, "you entered")
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                Log.d(TAG, "you  1 entered")
-                return false
-            }
-        })
-
-        activity?.menuInflater?.inflate(R.menu.marketplace_top_menu, menu);
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
-        Log.d(TAG, "you menu entered")
-        val search = menu.findItem(R.id.search)
-        val searchView  = search.actionView as androidx.appcompat.widget.SearchView
-
-        searchView.setOnQueryTextListener(object : OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d(TAG, "you entered")
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                Log.d(TAG, "you  1 entered")
-                return true
-            }
-        })
-
-        activity?.menuInflater?.inflate(R.menu.marketplace_top_menu, menu);
-    }
 
 
 

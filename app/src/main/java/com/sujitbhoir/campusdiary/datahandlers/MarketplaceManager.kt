@@ -228,6 +228,30 @@ class MarketplaceManager(val context: Context)
             }
     }
 
+
+    fun getProductsDataByCategory(cat : String,afterLoad: (arr : ArrayList<ProductData>) -> Unit) {
+
+        val arr = ArrayList<ProductData>()
+
+        db.collection("products")
+            .whereArrayContains("tags" , cat)
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val proData = doc.toObject(ProductData::class.java)!!
+                    arr.add(proData)
+                }
+
+                afterLoad(arr)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
+    }
+
     fun getProductData(id : String, afterLoad: (arr : ProductData) -> Unit) {
 
         val data = ProductData()
@@ -240,6 +264,30 @@ class MarketplaceManager(val context: Context)
                 val data = it.toObject(ProductData::class.java)!!
 
                 afterLoad(data)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "failed to load")
+            }
+    }
+
+    fun getProductDataBySearch(search : String, afterLoad: (arr : ArrayList<ProductData>) -> Unit) {
+
+        val arr = ArrayList<ProductData>()
+
+        db.collection("products")
+            .orderBy("name")
+            .startAt(search).endAt(search + "\uf8ff")
+            .get()
+            .addOnSuccessListener {
+                Log.d(TAG, "data are : ${it.documents}")
+
+                for (doc in it.documents)
+                {
+                    val proData = doc.toObject(ProductData::class.java)!!
+                    arr.add(proData)
+                }
+
+                afterLoad(arr)
             }
             .addOnFailureListener {
                 Log.d(TAG, "failed to load")
@@ -262,11 +310,12 @@ class MarketplaceManager(val context: Context)
         {
             //load pitcher
             Glide.with(context)
-                .load(ref)
+                .load(file)
                 .placeholder(circularProgressDrawable)
                 .centerCrop()
+                .error(R.drawable.production_quantity_limits_24px)
                 .into(image)
-                .onLoadFailed(context.resources.getDrawable(R.drawable.user))
+
 
         }
         else
@@ -281,9 +330,9 @@ class MarketplaceManager(val context: Context)
                         .load(file)
                         .placeholder(circularProgressDrawable)
                         .centerCrop()
+                        .error(R.drawable.production_quantity_limits_24px)
                         .into(image)
-                        .onLoadFailed(context.resources.getDrawable(R.drawable.user))
-
+                        
                 }
                 .addOnFailureListener{
                     Log.d(TAG, "unsuccessfully saved")

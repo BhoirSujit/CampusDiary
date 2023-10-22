@@ -38,6 +38,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -46,37 +47,59 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
+
                 android:layout_height="wrap_content">
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroup2"
                     android:layout_width="match_parent"
                     app:singleLine="true"
                     app:singleSelection="true"
+                    app:selectionRequired="true"
+
+                    android:paddingHorizontal="8dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip4"
+                        android:id="@+id/chipall"
                         style="@style/Widget.Material3.Chip.Suggestion"
                         android:layout_width="wrap_content"
+                        android:checked="true"
                         android:layout_height="wrap_content"
                         android:text="All" />
 
+
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip5"
+                        android:id="@+id/chipfollowing"
                         android:layout_width="wrap_content"
                         style="@style/Widget.Material3.Chip.Suggestion"
                         android:layout_height="wrap_content"
                         android:text="Following" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipowncom"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="from your communities" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/ownposts"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="your posts" />
 
 
 
@@ -95,6 +118,24 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chipGroup2" />
+
+            <Button
+                android:id="@+id/loadmorebutton"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:theme="@style/ThemeOverlay.Material3.Button.TonalButton"
+                android:text="Load More"
+                android:layout_gravity="center_horizontal"
+                android:drawableEnd="@drawable/arrow_forward_24px"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:padding="40dp"
+                android:src="@drawable/no_data_pana"
+                android:layout_width="match_parent"
+                android:id="@+id/emptyholder"
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
 

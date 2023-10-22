@@ -41,9 +41,31 @@
     </string-array>
 
     <string-array name="CommunityCategory">
-        <item>Nature</item>
         <item>Physics</item>
-        <item>Technology</item>
+        <item>Mathematics</item>
+        <item>Chemistry</item>
+        <item>Biology</item>
+        <item>Computer Science</item>
+        <item>Engineering</item>
+        <item>Environmental Science</item>
+        <item>Geology</item>
+        <item>Economics</item>
+        <item>History</item>
+        <item>Political Science</item>
+        <item>Psychology</item>
+        <item>Sociology</item>
+        <item>Literature</item>
+        <item>Philosophy</item>
+        <item>Business and Entrepreneurship</item>
+        <item>Medicine and Healthcare</item>
+        <item>Law</item>
+        <item>Fine Arts</item>
+        <item>Music</item>
+        <item>Languages and Linguistics</item>
+        <item>Education and Pedagogy</item>
+        <item>Social Work</item>
+        <item>Communication and Media Studies</item>
+        <item>Agriculture and Environmental Studies</item>
     </string-array>
 
 </resources>

@@ -25,17 +25,35 @@
             app:menu="@menu/communication_top_menu"
             app:title="Conversation" />
 
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:dividerColor="#CAC4D0"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle_view"
+        <View
+            android:id="@+id/divider22"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <ImageView
+        android:id="@+id/emptyholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="40dp"
+        android:src="@drawable/empty_pana"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"

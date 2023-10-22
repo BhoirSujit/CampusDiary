@@ -1,5 +1,6 @@
 package com.sujitbhoir.campusdiary.pages.marketplace
 
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -7,13 +8,17 @@ import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.text.format.DateFormat
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.adapters.ProductsGridAdapter
@@ -22,6 +27,7 @@ import com.sujitbhoir.campusdiary.databinding.ActivityProductPageBinding
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
+import com.sujitbhoir.campusdiary.datahandlers.ReportsManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import java.util.Calendar
@@ -70,6 +76,40 @@ class ProductPage : AppCompatActivity() {
             UsersManager(this).setProfilePic(it.sellerPic, binding.ivProfilePic)
             MarketplaceManager(this).setCarouselImages(it.images, binding.carousel, lifecycle = lifecycle)
             showSuggested(it.sellerId)
+
+
+            //report
+            binding.reportUser.setOnClickListener { _ ->
+                val dialog =
+                    Dialog(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
+                dialog.setContentView(R.layout.report_dialog_box)
+                val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
+                val btnclose = dialog.findViewById<Button>(R.id.btn_close)
+                val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
+
+                btnsend.setOnClickListener { _ ->
+                    //report
+                    ReportsManager().reportProduct(
+                        it.id,
+                        Firebase.auth.currentUser!!.uid,
+                        tvreq.text.toString()
+                    )
+
+                    Toast.makeText(
+                        this,
+                        "Thank you for submitting report, we take action as soon as possible",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    dialog.dismiss()
+
+                }
+                btnclose.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
+            }
+
         }
 
         binding.btnRequest.setOnClickListener {
@@ -103,6 +143,8 @@ class ProductPage : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+
+
 
 
 

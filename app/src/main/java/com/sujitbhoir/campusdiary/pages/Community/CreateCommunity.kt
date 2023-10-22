@@ -38,7 +38,7 @@ class CreateCommunity : AppCompatActivity() {
     private lateinit var storage : FirebaseStorage
     private lateinit var auth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
-    var imgUri = Uri.parse("android.resource://my.package.name/" + R.drawable.profile_icon)
+    var imgUri : Uri? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,14 +95,57 @@ class CreateCommunity : AppCompatActivity() {
 
         //btn create
         binding.btnCreate.setOnClickListener {
+            binding.btnCreate.isClickable = false
+            if (validate())
             createCommunity()
+            else
+                binding.btnCreate.isClickable = true
         }
 
 
     }
 
+    fun validate() : Boolean
+    {
+        binding.tvFname.error = null
+        binding.tvAbout.error = null
+        binding.dpCampus.error = null
+
+
+        if (binding.tvFname.text!!.isBlank())
+        {
+            binding.tvFname.error = "please enter community name"
+            return false
+        }
+        if (binding.tvAbout.text!!.isBlank())
+        {
+            binding.tvAbout.error = "please enter community Details"
+            return false
+        }
+        if (binding.dpCampus.text!!.isBlank())
+        {
+            binding.dpCampus.error = "please select campus"
+            return false
+        }
+
+
+        if (binding.chipGrouptags.checkedChipIds.isEmpty())
+        {
+            Toast.makeText(this, "Please select at least one tag", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (imgUri == null)
+        {
+            Toast.makeText(this, "Please add community pic", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
     fun createCommunity()
     {
+
         val checkedChipIds = binding.chipGrouptags.checkedChipIds
         val tags = ArrayList<String>()
 
@@ -115,7 +158,7 @@ class CreateCommunity : AppCompatActivity() {
             name = binding.tvFname.text.toString(),
             about = binding.tvAbout.text.toString(),
             campus = binding.dpCampus.text.toString(),
-            imgUri = imgUri,
+            imgUri = imgUri!!,
             admin = auth.currentUser!!.uid,
             tags = tags.toList()
             )

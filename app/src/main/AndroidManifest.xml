@@ -26,6 +26,15 @@
         android:theme="@style/Theme.CampusDiary"
         tools:targetApi="31">
         <activity
+            android:name=".settings.ManageStorage"
+            android:exported="false" />
+        <activity
+            android:name=".settings.AboutApp"
+            android:exported="false" />
+        <activity
+            android:name=".pages.Community.EditCommunity"
+            android:exported="false" />
+        <activity
             android:name=".ImageViewerActivity"
             android:exported="false" />
         <activity
@@ -88,6 +97,18 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.sujitbhoir.campusdiary.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                />
+        </provider>
     </application>
+
 
 </manifest>

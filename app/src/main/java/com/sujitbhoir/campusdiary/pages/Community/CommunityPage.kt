@@ -1,5 +1,6 @@
 package com.sujitbhoir.campusdiary.pages.Community
 
+import android.app.Dialog
 import android.content.Intent
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -19,6 +22,7 @@ import com.sujitbhoir.campusdiary.databinding.ActivityCommunityPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
+import com.sujitbhoir.campusdiary.datahandlers.ReportsManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 
@@ -90,8 +94,9 @@ class CommunityPage : AppCompatActivity() {
             binding.btnJoinEdit.setOnClickListener { it2 ->
                 if (Firebase.auth.currentUser!!.uid  == it.admin)
                 {
-                    val intent = Intent(this, MainActivity::class.java)
-                    //startActivity(intent)
+                    val intent = Intent(this, EditCommunity::class.java)
+                intent.putExtra("comid", comId)
+                    startActivity(intent)
                 }
                 else
                 {
@@ -101,6 +106,38 @@ class CommunityPage : AppCompatActivity() {
                         binding.tvMembercount.text = "${it.count()} members"
                     }
                 }
+            }
+
+            //report
+            binding.reportUser.setOnClickListener { _ ->
+                val dialog =
+                    Dialog(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog)
+                dialog.setContentView(R.layout.report_dialog_box)
+                val btnsend = dialog.findViewById<Button>(R.id.btn_send_req)
+                val btnclose = dialog.findViewById<Button>(R.id.btn_close)
+                val tvreq = dialog.findViewById<TextView>(R.id.tv_request_message)
+
+                btnsend.setOnClickListener { _ ->
+                    //report
+                    ReportsManager().reportCommunity(
+                        it.id,
+                        Firebase.auth.currentUser!!.uid,
+                        tvreq.text.toString()
+                    )
+
+                    Toast.makeText(
+                        this,
+                        "Thank you for submitting report, we take action as soon as possible",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    dialog.dismiss()
+
+                }
+                btnclose.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
             }
 
             //load post
@@ -122,6 +159,11 @@ class CommunityPage : AppCompatActivity() {
 
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
     fun loadPost(comid : String)
     {
         val db = Firebase.firestore
@@ -141,7 +183,8 @@ class CommunityPage : AppCompatActivity() {
                 {
                     val pData = doc.toObject(PostData::class.java) as PostData
                     postArr.add(pData)
-                    val postListAdapter = PostListAdapter(this, postArr)
+                    val postListAdapter = PostListAdapter(this)
+                    postListAdapter.updateData(postArr, HashMap<String, CommunityData>())
                     recyclerView.adapter = postListAdapter
 
                 }

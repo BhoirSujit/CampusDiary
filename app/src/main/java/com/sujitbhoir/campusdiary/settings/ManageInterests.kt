@@ -29,12 +29,9 @@ class ManageInterests : AppCompatActivity() {
         }
 
         //set tags
-        val edutag = arrayOf("Bsc", "Bcom", "BA", "Msc", "Law")
-        AddChipsInView(edutag, binding.chipGroupEdu)
 
+        AddChipsInView(resources.getStringArray(R.array.CommunityCategory), binding.chipGroupEdu)
 
-        val inttag = arrayOf("Astrology","Writing", "Singing", "Painting", "Drawing","Fitness","NCC","Yoga","Gym","Cooking","Nature","Poetry","Travelling","Dance","Books","Cricket","Coding")
-        AddChipsInView(inttag, binding.chipGroupInterest)
 
 
 
@@ -48,7 +45,6 @@ class ManageInterests : AppCompatActivity() {
         binding.btnUpdate.setOnClickListener {
 
             val checkedChipIds = binding.chipGroupEdu.checkedChipIds
-            checkedChipIds.addAll(binding.chipGroupInterest.checkedChipIds)
 
             val tags = ArrayList<String>()
 
