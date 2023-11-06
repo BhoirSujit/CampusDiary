@@ -7,14 +7,13 @@ import android.text.Editable
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
-import com.nareshchocha.filepickerlibrary.models.PickMediaType
-import com.nareshchocha.filepickerlibrary.ui.FilePicker
+
 import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityEditCommunityBinding
@@ -64,13 +63,12 @@ class EditCommunity : AppCompatActivity() {
 
     }
 
-    val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    val resultActivity = registerForActivityResult(ActivityResultContracts.PickVisualMedia())
     {
         val db = Firebase.firestore
-        if (it.resultCode == RESULT_OK && it.data?.data != null)
+        if ( it != null)
         {
-            val uri = it.data?.data!!
-
+            val uri = it
             manager.uploadCommunityPic(uri, data!!.id) {
                 db.collection("community").document(data!!.id).set(
                     hashMapOf(
@@ -84,6 +82,7 @@ class EditCommunity : AppCompatActivity() {
             }
         }
     }
+
 
     fun setup(data : CommunityData)
     {
@@ -105,14 +104,9 @@ class EditCommunity : AppCompatActivity() {
 
         binding.btnEditprofilepic.setOnClickListener {
             resultActivity.launch(
-                FilePicker.Builder(this)
-                    .pickMediaBuild(
-                        PickMediaConfig(
-                            mPickMediaType = PickMediaType.ImageOnly,
-                            allowMultiple = false,
-
-                            )
-                    )
+                PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    .build()
             )
         }
 

@@ -61,6 +61,7 @@ class FirebaseFirestoreHandler {
         name : String,
         email : String,
         campus : String,
+        notificationToken : String,
         afterAdding : () -> Unit = {},
         onError : (exception : Exception) -> Unit = {}
     )
@@ -70,7 +71,8 @@ class FirebaseFirestoreHandler {
             "name" to name,
             "email" to email,
             "id" to uid,
-            "campus" to campus
+            "campus" to campus,
+            "notificationToken" to notificationToken
         )
 
        userDoc

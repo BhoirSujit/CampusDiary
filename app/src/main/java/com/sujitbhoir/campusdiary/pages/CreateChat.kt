@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.data.DataHolder
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
@@ -42,6 +44,7 @@ import com.sujitbhoir.campusdiary.bottomsheet.UserBottomSheet
 import com.sujitbhoir.campusdiary.databinding.ActivityCreateChatBinding
 import com.sujitbhoir.campusdiary.dataclasses.ReqData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.NotificationManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Community.CreateCommunity
@@ -85,7 +88,11 @@ class CreateChat : AppCompatActivity() {
                     val snapshot = task.result
                     Log.d(TAG, "Count: ${snapshot.count}")
                     if (snapshot.count.toInt() != 0 )
-                    Toast.makeText(this, "You have ${snapshot.count} requests. please check it out", Toast.LENGTH_SHORT).show()
+                    {
+
+                        Toast.makeText(this, "You have ${snapshot.count} requests. please check it out", Toast.LENGTH_SHORT).show()
+                    }
+
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException())
                 }
@@ -153,6 +160,8 @@ class CreateChat : AppCompatActivity() {
 
     }
 
+
+
     private fun loadBySearch(keyword : String)
     {
         requestListAdapter?.clearList()
@@ -187,6 +196,7 @@ class CreateChat : AppCompatActivity() {
 
 
 
+
             }
             .addOnFailureListener {
                 Log.d(TAG, "failed to load")
@@ -202,6 +212,7 @@ class CreateChat : AppCompatActivity() {
         //suggest //get data
         db.collection("users")
             .whereNotEqualTo("id" , Firebase.auth.currentUser!!.uid)//hide own account
+
 
             .get()
             .addOnSuccessListener {
@@ -222,6 +233,8 @@ class CreateChat : AppCompatActivity() {
                 }
 
                 recyclerView.adapter = usersListAdapter
+
+
 
 
 
@@ -271,8 +284,9 @@ class CreateChat : AppCompatActivity() {
 
 
 
-                        btnsend.setOnClickListener {
+                        btnsend.setOnClickListener {_ ->
                             //create session
+
                             Log.d(TAG, "accpect process")
                             val ref = Firebase.firestore.collection("sessions")
                             val sessionid = ref.document().id
@@ -286,13 +300,19 @@ class CreateChat : AppCompatActivity() {
                                 "membersnames" to listOf(reqsData[i].receiver, myData.name)
                             )
 
+
+
+                            reqsData.remove(reqsData[i])
+
                             ref.document(sessionid)
                                 .set(session)
                                 .addOnSuccessListener {
                                     Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
                                     db.collection("request").document(sessionid).delete().addOnSuccessListener {
-                                        reqsData.remove(reqsData[i])
+                                        Toast.makeText(this, "Session are ready", Toast.LENGTH_LONG).show()
+
                                         requestListAdapter?.updateData(reqsData)
+
                                     }
                                 }
                                 .addOnFailureListener {
@@ -314,7 +334,7 @@ class CreateChat : AppCompatActivity() {
                                     Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
                                     reqsData.remove(reqsData[i])
                                     requestListAdapter?.updateData(reqsData)
-
+                                   
                                 }
                                 .addOnFailureListener {
                                     Log.w(UserBottomSheet.TAG, "Error adding document", it)
@@ -325,12 +345,14 @@ class CreateChat : AppCompatActivity() {
                         btnignore.setOnClickListener {
                             reqsData.remove(reqsData[i])
                             requestListAdapter?.updateData(reqsData)
+
                         }
 
 
                     }
 
                     recyclerView.adapter = requestListAdapter
+
                 }
 
 

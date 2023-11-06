@@ -9,6 +9,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.text.format.DateFormat
 import android.util.Log
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +52,11 @@ class ProductPage : AppCompatActivity() {
         binding.toolbar1.setNavigationIcon(R.drawable.arrow_back_24px)
         binding.toolbar1.setOnClickListener {
             finish()
+        }
+
+
+        binding.button2.setOnClickListener {
+            binding.scrollpage.requestChildFocus(binding.btnContactWhatsapp, binding.btnContactWhatsapp)
         }
 
         //getintent

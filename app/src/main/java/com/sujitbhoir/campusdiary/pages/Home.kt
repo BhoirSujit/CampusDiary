@@ -174,7 +174,7 @@ class Home : Fragment() {
             else if (binding.ownposts.isChecked)
             {
                 Log.d(TAG, "own chip")
-                getPost(db.collection("posts").whereEqualTo("authUName", data.username))
+                getPost(db.collection("posts").whereEqualTo("authId", data.id))
                 {
                     loadPost()
                 }

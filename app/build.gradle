@@ -15,8 +15,8 @@ android {
         applicationId "com.sujitbhoir.campusdiary"
         minSdk 26
         targetSdk 34
-        versionCode 4
-        versionName "2.1"
+        versionCode 10
+        versionName "4.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,16 +45,20 @@ android {
 
 dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
-    implementation 'io.github.chochanaresh:filepicker:0.2.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
+    implementation 'androidx.activity:activity-ktx:1.8.0'
 
     implementation 'id.zelory:compressor:3.0.1'
-
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 
     implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.4'
+    implementation 'com.google.firebase:firebase-messaging:23.3.1'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 

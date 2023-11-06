@@ -30,6 +30,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollpage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
@@ -60,24 +61,20 @@
 
             </org.imaginativeworld.whynotimagecarousel.ImageCarousel>
 
-            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-                android:id="@+id/drag_handle"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/carousel" />
 
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Product name"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/drag_handle" />
+                app:layout_constraintTop_toBottomOf="@+id/carousel" />
 
             <TextView
                 android:id="@+id/tv_prize"
@@ -88,7 +85,7 @@
                 android:layout_marginEnd="16dp"
                 android:text="100"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                android:textColor="?colorPrimary"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name" />
@@ -124,7 +121,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_prize" />
+                app:layout_constraintTop_toBottomOf="@+id/button2" />
 
             <TextView
 
@@ -139,6 +136,7 @@
                 app:layout_constraintTop_toTopOf="@+id/divider19" />
 
             <TextView
+                android:background="@drawable/description_background"
                 android:id="@+id/tv_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -395,9 +393,17 @@
 
             </FrameLayout>
 
-
-
-
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="Interested"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_prize" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

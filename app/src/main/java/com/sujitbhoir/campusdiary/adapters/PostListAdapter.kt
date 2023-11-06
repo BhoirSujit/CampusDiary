@@ -144,7 +144,15 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
         if (dataSet[position].images.isNotEmpty())
         {
             holder.imagecontainer.visibility = View.VISIBLE
-            PostsManager(context).setPostPicShapable(dataSet[position].images[0], holder.imagecontainer)
+            PostsManager(context).setPostPicShapable(dataSet[position].images[0], holder.imagecontainer){
+                val intent = Intent(context, PostPage::class.java)
+                intent.putExtra("postid", dataSet[position].id)
+                if (communitiesData.containsKey(dataSet[position].communityId))
+                    intent.putExtra("CommunityPicID", communitiesData.get(dataSet[position].communityId)!!.communityPicId)
+                else intent.putExtra("CommunityPicID","nopic")
+
+                context.startActivity(intent)
+            }
         }
         else
         {
@@ -162,11 +170,12 @@ RecyclerView.Adapter<PostListAdapter.ViewHolder>(){
             context.startActivity(intent)
         }
 
+
         holder.optionbtn.
         setOnCreateContextMenuListener { contextMenu, view, contextMenuInfo ->
 
 
-            if (dataSet[position].authUName == UsersManager(context).getMyData()!!.username) {
+            if (dataSet[position].authId == UsersManager(context).getMyData()!!.id) {
                 contextMenu.add("delete").setOnMenuItemClickListener {
                     val d = MaterialAlertDialogBuilder(context)
                         .setTitle("Do you want to Remove")

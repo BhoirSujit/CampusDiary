@@ -47,6 +47,7 @@ class Communication : Fragment() {
     private lateinit var auth : FirebaseAuth
     val sessionArr = ArrayList<SessionData>()
     val requireUsersIds = ArrayList<String>()
+    private lateinit var cont : Context
 
 
 
@@ -55,8 +56,9 @@ class Communication : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunicationBinding.inflate(inflater, container, false)
-        data = DataHandler.getUserData(requireContext())!!
-        firebaseStorageHandler = FirebaseStorageHandler(requireContext())
+        cont = container!!.context
+        data = DataHandler.getUserData(cont)!!
+        firebaseStorageHandler = FirebaseStorageHandler(cont)
 
         db = Firebase.firestore
         auth = Firebase.auth
@@ -65,14 +67,14 @@ class Communication : Fragment() {
 
         //
         recyclerView = binding.recycleView
-        recyclerView.layoutManager = LinearLayoutManager(container?.context)
-        chatListAdapter = ChatListAdapter(container!!.context, sessionArr , hashMapOf<String, UserData>())
+        recyclerView.layoutManager = LinearLayoutManager(cont)
+        chatListAdapter = ChatListAdapter(cont, sessionArr , hashMapOf<String, UserData>())
         chatListAdapter.setHasStableIds(true)
         recyclerView.adapter = chatListAdapter
 
 
         //set profile pic
-        UsersManager(container!!.context).setProfilePic( data.profilePicId,
+        UsersManager(cont).setProfilePic( data.profilePicId,
             object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -106,7 +108,7 @@ class Communication : Fragment() {
 
         //float action button
         binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(container?.context, CreateChat::class.java)
+            val intent = Intent(cont, CreateChat::class.java)
 
             startActivity(intent)
         }
@@ -145,7 +147,7 @@ class Communication : Fragment() {
                     requireUsersIds.add(if (sessionData.members[0] == Firebase.auth.currentUser!!.uid) sessionData.members[1] else sessionData.members[0])
                 }
 
-                UsersManager(requireContext()).getUsersData(requireUsersIds)
+                UsersManager(cont).getUsersData(requireUsersIds)
                 {
                     chatListAdapter.updateData(sessionArr, it)
                     if (sessionArr.isEmpty())

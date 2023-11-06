@@ -35,6 +35,7 @@ class CommunicationManager(val context: Context) {
     private val db = Firebase.firestore
     private val storage = Firebase.storage
     private var listenerRegistration : ListenerRegistration? = null
+    private var listenerRegistrationsession : ListenerRegistration? = null
     private fun sessionRef() = db.collection("sessions").document()
 
     private fun getChatSession(sessionId : String) = db.collection("chatrooms").document(sessionId).collection("messages")
@@ -99,8 +100,14 @@ class CommunicationManager(val context: Context) {
         listenerRegistration?.remove()
     }
 
+    fun stopLoadingSessions()
+    {
+        listenerRegistrationsession?.remove()
+    }
+
     var sessionId : String? = null
     var eventListener : EventListener<QuerySnapshot>? = null
+    var eventlistenersession : EventListener<QuerySnapshot>? = null
 
 
 

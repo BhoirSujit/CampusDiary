@@ -9,6 +9,7 @@ import android.text.Editable
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -21,9 +22,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
-import com.nareshchocha.filepickerlibrary.models.PickMediaType
-import com.nareshchocha.filepickerlibrary.ui.FilePicker
+
 import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityEditProfileBinding
@@ -88,12 +87,11 @@ class EditProfile : AppCompatActivity() {
 
 
         //upload pic
-        val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        val resultActivity = registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         {
-            if (it.resultCode == RESULT_OK && it.data?.data != null)
+            if ( it != null)
             {
-                val uri = it.data?.data!!
-
+                val uri = it
                 usersManager.uploadProfilePic(auth.currentUser!!.uid,uri) {
                     //save profilepicid
                     Toast.makeText(this, "Uploaded Successfully", Toast.LENGTH_LONG).show()
@@ -109,14 +107,9 @@ class EditProfile : AppCompatActivity() {
 
         binding.btnEditprofilepic.setOnClickListener {
             resultActivity.launch(
-                FilePicker.Builder(this)
-                    .pickMediaBuild(
-                        PickMediaConfig(
-                            mPickMediaType = PickMediaType.ImageOnly,
-                            allowMultiple = false,
-
-                        )
-                    )
+                PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    .build()
             )
         }
 
@@ -145,47 +138,62 @@ class EditProfile : AppCompatActivity() {
             finish()
         }
 
+        fun update()
+        {
+            val userinfo : HashMap<String, String> = hashMapOf(
+                "username" to binding.tvUname.text.toString(),
+                "name" to binding.tvFname.text.toString(),
+                "about" to binding.tvAbout.text.toString(),
+                "gender" to binding.dpGender.text.toString(),
+                "age" to binding.tvAge.text.toString()
+            )
+
+            db.collection("users")
+                .document(Firebase.auth.currentUser!!.uid)
+                .set(userinfo, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
+                    usersManager.updateUserData(this)
+                    {
+                        Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+
+                }
+                .addOnFailureListener {
+                    Log.w(TAG, "Error adding document", it)
+                }
+        }
+
         //update
         binding.btnUpdate.setOnClickListener {
+            binding.btnUpdate.isClickable = false
             if (valid())
             {
-                val username = binding.tvUname.text.toString()
-                isUsernameExists(username) { exists ->
-                    if (exists) {
-                        // The username already exists
-                        // Handle the case accordingly (e.g., show an error message)
-                        Log.d(TAG, "Username exist")
-                        binding.tvUname.error = "Username not available"
-                    } else {
-                        // The username is available
-                        // Proceed with the registration or other desired actions
-                        Log.d(TAG, "Username not exist")
-                        val userinfo : HashMap<String, String> = hashMapOf(
-                            "username" to binding.tvUname.text.toString(),
-                            "name" to binding.tvFname.text.toString(),
-                            "about" to binding.tvAbout.text.toString(),
-                            "gender" to binding.dpGender.text.toString(),
-                            "age" to binding.tvAge.text.toString()
-                        )
+                if (data.username == binding.tvUname.text.toString())
+                {
+                    update()
+                }
+                else
+                {
+                    val username = binding.tvUname.text.toString()
+                    isUsernameExists(username) { exists ->
+                        if (exists) {
+                            // The username already exists
+                            // Handle the case accordingly (e.g., show an error message)
+                            Log.d(TAG, "Username exist")
+                            binding.tvUname.error = "Username not available"
+                        } else {
+                            // The username is available
+                            // Proceed with the registration or other desired actions
+                            Log.d(TAG, "Username not exist")
+                            update()
 
-                        db.collection("users")
-                            .document(Firebase.auth.currentUser!!.uid)
-                            .set(userinfo, SetOptions.merge())
-                            .addOnSuccessListener {
-                                Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
-                                usersManager.updateUserData(this)
-                                {
-                                    Toast.makeText(baseContext, "Updated Successfully", Toast.LENGTH_LONG).show()
-                                    finish()
-                                }
-
-                            }
-                            .addOnFailureListener {
-                                Log.w(TAG, "Error adding document", it)
-                            }
-
+                        }
                     }
                 }
+
+
 
 
             }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.text.format.DateFormat
 import android.util.Log
 import android.widget.ImageView
@@ -18,7 +19,7 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.nareshchocha.filepickerlibrary.utilities.appConst.Const
+
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.ProductData
 
@@ -27,6 +28,7 @@ import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.net.URL
 import java.util.Calendar
 import java.util.Locale
@@ -110,6 +112,24 @@ class MarketplaceManager(val context: Context)
             }
 
     }
+
+    private fun decodeUri(context: Context, uri: Uri): Bitmap? {
+        try {
+            // Open an input stream from the Uri
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+
+            // Decode the stream into a Bitmap
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            // Close the input stream
+            inputStream?.close()
+
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
     fun uploadImages(files : ArrayList<String>, imagesIds : ArrayList<String>, afterLoad : () -> Unit)
     {
         var i = 0;
@@ -117,7 +137,7 @@ class MarketplaceManager(val context: Context)
             // calling from global scope
             var bitmap: Bitmap? = null
             try {
-                bitmap = BitmapFactory.decodeFile(file)
+                bitmap = decodeUri(context, file.toUri())
             } catch (e: IOException) {
                 e.printStackTrace()
             }

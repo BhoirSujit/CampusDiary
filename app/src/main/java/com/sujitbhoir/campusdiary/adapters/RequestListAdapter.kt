@@ -20,6 +20,7 @@ import com.sujitbhoir.campusdiary.bottomsheet.UserBottomSheet
 import com.sujitbhoir.campusdiary.dataclasses.ReqData
 import com.sujitbhoir.campusdiary.dataclasses.UserData
 import com.sujitbhoir.campusdiary.datahandlers.CommunicationManager
+import com.sujitbhoir.campusdiary.datahandlers.NotificationManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import org.w3c.dom.Text
@@ -106,6 +107,12 @@ RecyclerView.Adapter<RequestListAdapter.ViewHolder>() {
                     .addOnSuccessListener {
                         Log.d(UserBottomSheet.TAG, "DocumentSnapshot added with ID: ${it}")
                         Toast.makeText(context, "Request Accepted", Toast.LENGTH_LONG).show()
+
+                        Log.d("newera","try to get invo : ${dataSet[position].sender}")
+                        UsersManager(context).getUserData(dataSet[position].sender){data ->
+                            Log.d("newera","invo data : $data")
+                            NotificationManager(context).sendAcceptionACK(data.notificationToken, UsersManager(context).getMyData()!!.name, data.id)
+                        }
                         dataSet.remove(dataSet[position])
                         updateData(dataSet)
 

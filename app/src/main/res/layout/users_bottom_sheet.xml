@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,6 +20,7 @@
         android:background="?android:attr/listDivider"/>
 
     <ScrollView
+        android:background="?colorSurface"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -46,24 +48,14 @@
                 app:layout_constraintVertical_bias="0.518"
                 app:srcCompat="@drawable/user" />
 
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
             <TextView
                 android:id="@+id/tv_name"
-                android:maxLines="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="16dp"
+                android:maxLines="1"
                 android:text="your name"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                 app:layout_constraintBottom_toBottomOf="@+id/profilepic"
@@ -82,30 +74,46 @@
                 android:text="yourname1234"
                 app:layout_constraintStart_toEndOf="@+id/imageView6"
                 app:layout_constraintTop_toTopOf="@+id/imageView6" />
-
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/detCon"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="18dp"
-                android:text="About"
-                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-            <TextView
-                android:id="@+id/tv_about1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:text="bio"
+                android:background="@drawable/description_background"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView2">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="About"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+                <TextView
+                    android:id="@+id/tv_about1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+
+
+                    android:text="bio"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            </LinearLayout>
+
+
+
 
             <View
                 android:id="@+id/divider"
@@ -114,7 +122,7 @@
                 android:layout_marginTop="24dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_about1" />
+                app:layout_constraintTop_toBottomOf="@+id/detCon" />
 
             <TextView
                 android:id="@+id/campusname"

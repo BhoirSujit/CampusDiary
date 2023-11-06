@@ -12,6 +12,7 @@ data class PostData(
     var editors :  List<String> = listOf(),
     var profilePicId : String = "",
     var authUName : String = "",
+    var authId : String = "",
     var communityId : String = "",
     var context : String = "",
     var creationDate : String = "",

@@ -3,6 +3,7 @@ package com.sujitbhoir.campusdiary.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.UserManager
 import android.util.Log
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -12,9 +13,13 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.databinding.ActivityLoginBinding
+import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
+import com.sujitbhoir.campusdiary.settings.ManageInterests
 
 class Login : AppCompatActivity() {
 
@@ -70,6 +75,7 @@ class Login : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:success")
                     DataHandler.updateUserData(this)
 
+                    UsersManager(this).updateNotificationToken()
 
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)

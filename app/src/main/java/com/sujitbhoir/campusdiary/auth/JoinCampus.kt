@@ -11,6 +11,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityJoinCampusBinding
@@ -65,31 +66,47 @@ class JoinCampus : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:success")
                     val uid = task.result.user!!.uid
 
-                    FirebaseFirestoreHandler().addUserData(
-                        uid = uid,
-                        userName = username,
-                        name = fullname,
-                        email = email,
-                        campus = binding.dpCampus.text.toString(),
-                        afterAdding = {
-                            DataHandler.updateUserData(this)
-
-                            val intent = Intent(this, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                            startActivity(intent)
-
-                            val intent2 = Intent(this, com.sujitbhoir.campusdiary.pages.Profile::class.java)
-                            intent2.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                            startActivity(intent2)
-
-                            val intent3 = Intent(this, ManageInterests::class.java)
-                            startActivity(intent3)
-                            finish()
-                        },
-                        onError = {
-                            Toast.makeText(this, "Something went Wrong", Toast.LENGTH_LONG).show()
+                    //register for notification
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                            Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show()
+                            return@addOnCompleteListener
                         }
-                    )
+
+                        // Get the FCM token
+                        val token = task.result
+                        Log.d(TAG, "Device B's FCM token: $token")
+
+                        FirebaseFirestoreHandler().addUserData(
+                            uid = uid,
+                            userName = username,
+                            name = fullname,
+                            email = email,
+                            campus = binding.dpCampus.text.toString(),
+                            notificationToken = token,
+                            afterAdding = {
+                                DataHandler.updateUserData(this)
+
+                                val intent = Intent(this, MainActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                                startActivity(intent)
+
+                                val intent2 = Intent(this, com.sujitbhoir.campusdiary.pages.Profile::class.java)
+                                intent2.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                                startActivity(intent2)
+
+                                val intent3 = Intent(this, ManageInterests::class.java)
+                                startActivity(intent3)
+                                finish()
+                            },
+                            onError = {
+                                Toast.makeText(this, "Something went Wrong", Toast.LENGTH_LONG).show()
+                            }
+                        )
+                    }
+
+
 
 
 

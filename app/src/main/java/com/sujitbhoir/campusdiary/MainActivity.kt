@@ -1,10 +1,18 @@
 package com.sujitbhoir.campusdiary
 
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -13,9 +21,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.sujitbhoir.campusdiary.databinding.ActivityMainBinding
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import com.sujitbhoir.campusdiary.pages.Communication
@@ -36,6 +46,39 @@ class MainActivity : AppCompatActivity() {
     private var currentFragment: Fragment? = null
     private lateinit var navController: NavController
 
+    fun openNotificationSettings(context: Context) {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        context.startActivity(intent)
+    }
+
+    fun isNotificationPermissionEnabled(context: Context): Boolean {
+        val notificationManager = NotificationManagerCompat.from(context)
+        return notificationManager.areNotificationsEnabled()
+    }
+
+    fun showNotificationPermissionDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Notification Permission Required")
+        builder.setMessage("Please grant notification permissions to receive important updates.")
+
+        builder.setPositiveButton("Grant Permission") { _, _ ->
+            // Open app settings for notification permissions
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", context.packageName, null)
+            intent.data = uri
+            context.startActivity(intent)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -52,6 +95,13 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         setupWithNavController(binding.bottomNavigationView, navController)
+
+        //subscribe to topic
+        Firebase.messaging.subscribeToTopic("officialMessage")
+        if (!isNotificationPermissionEnabled(this))
+        {
+            showNotificationPermissionDialog(this)
+        }
 
 
         //define view

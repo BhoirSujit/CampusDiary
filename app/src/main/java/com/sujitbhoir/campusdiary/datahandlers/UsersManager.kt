@@ -2,6 +2,7 @@ package com.sujitbhoir.campusdiary.datahandlers
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.ThumbnailUtils
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.graphics.scale
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -19,11 +21,16 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
+import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.helperclass.DataHandler
+import com.sujitbhoir.campusdiary.pages.Profile
+import com.sujitbhoir.campusdiary.settings.ManageInterests
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -56,6 +63,30 @@ class UsersManager(private val context: Context) {
             {
                 it.mkdir()
             }
+        }
+    }
+
+    fun updateNotificationToken()
+    {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get the FCM token
+            val token = task.result
+            Log.d(TAG, "Device B's FCM token: $token")
+
+            //update notification token
+            val data = hashMapOf<String, Any>(
+                "notificationToken" to token
+            )
+
+            userRef.document(Firebase.auth.currentUser!!.uid).set(data, SetOptions.merge())
+                .addOnSuccessListener {
+
+                }
         }
     }
 

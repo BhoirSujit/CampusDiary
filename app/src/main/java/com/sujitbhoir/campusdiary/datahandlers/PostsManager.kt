@@ -1,10 +1,12 @@
 package com.sujitbhoir.campusdiary.datahandlers
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.shapes.Shape
 import android.media.ThumbnailUtils
+import android.net.Uri
 import android.net.wifi.WifiManager.SubsystemRestartTrackingCallback
 import android.provider.MediaStore
 import android.util.Log
@@ -18,10 +20,15 @@ import android.widget.LinearLayout.LAYOUT_DIRECTION_RTL
 import android.widget.LinearLayout.LayoutParams
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
+import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselSnapHelper
+import com.google.android.material.carousel.CarouselStrategy
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -36,7 +43,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.adapters.CarouselAdapter
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.dataclasses.ProductData
 import org.imaginativeworld.whynotimagecarousel.ImageCarousel
@@ -44,6 +53,7 @@ import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.util.Date
 import java.util.UUID
 import kotlin.coroutines.coroutineContext
@@ -130,6 +140,7 @@ class PostsManager(private val context: Context) {
         editors : String,
         tags : List<String>,
         authUName : String,
+        authId : String,
         afterPosting : (postId : String) -> Unit
     )
     {
@@ -155,6 +166,7 @@ class PostsManager(private val context: Context) {
             "communityName" to communityName,
             "editors" to ed,
             "campus" to campus,
+            "authId" to authId,
             "context" to context,
             "creationDate" to Timestamp.now().seconds.toString(),
             "tags" to tags,
@@ -168,11 +180,16 @@ class PostsManager(private val context: Context) {
 
                 Log.d(TAG, "snapshot added with $it")
                 var c = 0;
-                uploadImages(images, imagesIds)
+                if (images.isNotEmpty())
                 {
-                    c += 1
-                    if (images.size == c) afterPosting(id)
-                }
+                    uploadImages(images, imagesIds)
+                    {
+                        c += 1
+                        if (images.size == c) afterPosting(id)
+                    }
+                }else afterPosting(id)
+
+
 
             }
             .addOnFailureListener{
@@ -187,7 +204,7 @@ class PostsManager(private val context: Context) {
             // calling from global scope
             var bitmap: Bitmap? = null
             try {
-                bitmap = BitmapFactory.decodeFile(file)
+                bitmap = decodeUri(context, file.toUri())
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -213,7 +230,25 @@ class PostsManager(private val context: Context) {
         }
     }
 
-    fun setPostPicShapable(ID : String,  image : FrameLayout)
+    private fun decodeUri(context: Context, uri: Uri): Bitmap? {
+        try {
+            // Open an input stream from the Uri
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+
+            // Decode the stream into a Bitmap
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            // Close the input stream
+            inputStream?.close()
+
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun setPostPicShapable(ID : String,  image : FrameLayout, imgOnClickListener : (file : File) -> Unit = {})
     {
 
         var file = getStorageFile(ID)
@@ -238,6 +273,8 @@ class PostsManager(private val context: Context) {
 
             val ratio  = (bitmap!!.width.toDouble().div(bitmap.height) * 100).toInt()
             Log.d(TAG, "ration are : $h , $w,  $ratio")
+
+            image.removeAllViews()
 
             val newimg = ShapeableImageView(context)
             newimg.layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, when
@@ -270,6 +307,11 @@ class PostsManager(private val context: Context) {
                 .centerCrop()
                 .placeholder(circularProgressDrawable)
                 .into(newimg)
+
+            newimg.setOnClickListener{
+                imgOnClickListener(file)
+
+            }
 
 
 
@@ -373,6 +415,52 @@ class PostsManager(private val context: Context) {
                         )
                         carousel.registerLifecycle(lifecycle = lifecycle)
                         carousel.setData(list)
+
+                    }
+                    .addOnFailureListener{
+                        Log.d(TAG, "unsuccessfully saved")
+                    }
+            }
+        }
+
+
+    }
+
+    fun setCarouselView(view : RecyclerView,images : List<String>)
+    {
+        val list = ArrayList<File>()
+        val adapter = CarouselAdapter(context)
+        val manager = CarouselLayoutManager()
+        view.layoutManager = manager
+        view.adapter = adapter
+
+        for (img in images)
+        {
+            var file = getStorageFile(img)
+            val ref = getStorageRef(img)
+
+            if (file.exists())
+            {
+                //load pitcher
+                list.add(
+                   file
+                )
+                adapter.setImage(list)
+
+
+            }
+            else
+            {
+                ref.getFile(file)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "successfull saved in storage")
+                        file = getStorageFile(img)
+
+                        //load pitcher
+                        list.add(
+                            file
+                        )
+                        adapter.setImage(list)
 
                     }
                     .addOnFailureListener{

@@ -6,13 +6,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Adapter
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.sujitbhoir.campusdiary.ImageViewerActivity
 import com.sujitbhoir.campusdiary.MainActivity
 import com.sujitbhoir.campusdiary.R
+import com.sujitbhoir.campusdiary.adapters.CarouselAdapter
 import com.sujitbhoir.campusdiary.databinding.ActivityPostPageBinding
 import com.sujitbhoir.campusdiary.dataclasses.PostData
 import com.sujitbhoir.campusdiary.datahandlers.CommunityManager
@@ -43,6 +46,7 @@ class PostPage : AppCompatActivity() {
             setup()
             CommunityManager(this).getCommunityData(data.communityId ) {
                 CommunityManager(this).setProfilePic(it.communityPicId, binding.ivComPic)
+                binding.tvMembers.text = "${it.members.size} Members"
                 fun toggle(members : List<String>)
                 {
                     if (Firebase.auth.currentUser!!.uid  == it.admin)
@@ -117,19 +121,37 @@ class PostPage : AppCompatActivity() {
         }
 
         //set Data
-        binding.tvMembers.text = data.authUName
+
         binding.tvName.text = data.title
         binding.btnLike.isSelected = data.likes.contains(Firebase.auth.currentUser!!.uid)
         binding.tvLikeCount.text = data.likes.size.toString()
         binding.tvCname.text = data.communityName
-        binding.tvdes.text = data.context
+        if (data.context.isNotBlank()) binding.tvdes.text = data.context
         binding.tvDate.text = "posted on ${TimeFormater().getFormatedTime(data.creationDate.toLong())}"
 
 
 
-        PostsManager(this).setCarouselImages(data.images, binding.carousel, lifecycle)
+        //PostsManager(this).setCarouselImages(data.images, binding.carousel, lifecycle)
+        if (data.images.size > 1)
+        {
+            PostsManager(this).setCarouselView(binding.carouselView, data.images)
+        }
+        else if (data.images.isNotEmpty())
+        {
+            PostsManager(this).setPostPicShapable(data.images[0], binding.postImage) {
+                val intent = Intent(this, ImageViewerActivity::class.java)
+                intent.putExtra("image", it )
+                this.startActivity(intent)
+            }
+        }
+        else {
 
-        binding.carousel
+        }
+
+
+
+
+
 
 
         //like system

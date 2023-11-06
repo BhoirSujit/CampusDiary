@@ -9,6 +9,7 @@ data class UserData(
     var age : String = "",
     var about : String = "",
     var gender : String = "",
+    var notificationToken : String = "",
     var campus : String = "",
     var mobileNo : String = "",
     var interests : List<String> = listOf()

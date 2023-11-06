@@ -30,6 +30,7 @@
         app:layout_constraintTop_toTopOf="@+id/iv_com_pic" />
 
     <FrameLayout
+
         android:id="@+id/post_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

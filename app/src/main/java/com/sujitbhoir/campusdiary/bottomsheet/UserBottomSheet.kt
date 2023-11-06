@@ -18,6 +18,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.dataclasses.UserData
+import com.sujitbhoir.campusdiary.datahandlers.NotificationManager
 import com.sujitbhoir.campusdiary.datahandlers.ReportsManager
 import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
@@ -77,6 +78,9 @@ class UserBottomSheet(private val userData: UserData) : BottomSheetDialogFragmen
                 ref
                     .set(reqmes)
                     .addOnSuccessListener {
+
+                        NotificationManager(context!!).sendSessionRequest(tvreq.text.toString(),myData.name,userData.notificationToken, myData.id)
+
                         Log.d(TAG, "DocumentSnapshot added with ID: ${it}")
                         Toast.makeText(requireContext(), "Request send successfully", Toast.LENGTH_LONG).show()
                         dialog.dismiss()

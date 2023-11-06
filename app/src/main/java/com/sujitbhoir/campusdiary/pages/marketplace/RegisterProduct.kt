@@ -1,19 +1,18 @@
 package com.sujitbhoir.campusdiary.pages.marketplace
 
 import android.app.Activity
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
-import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
-import com.nareshchocha.filepickerlibrary.models.PickMediaType
-import com.nareshchocha.filepickerlibrary.ui.FilePicker
-import com.nareshchocha.filepickerlibrary.utilities.appConst.Const
+
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityRegisterProductBinding
 import com.sujitbhoir.campusdiary.dataclasses.UserData
@@ -21,11 +20,13 @@ import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.datahandlers.MarketplaceManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
+import java.io.File
+import java.net.URL
 
 class RegisterProduct : AppCompatActivity() {
 
     private lateinit var binding : ActivityRegisterProductBinding
-    private lateinit var filePaths : ArrayList<String>
+    private var filePaths = ArrayList<String>()
     private lateinit var data : UserData
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,22 +48,28 @@ class RegisterProduct : AppCompatActivity() {
         val commAdapter = ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.ProductCondition))
         binding.dpCondition.setAdapter(commAdapter)
 
-        val launcher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                    // Use the uri to load the image
-                    filePaths = it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
+
+        val pickMultipleMedia =
+            registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+                // Callback is invoked after the user selects media items or closes the
+                // photo picker.
+                if (uris.isNotEmpty()) {
+                    filePaths.clear()
+                    for (uri in uris)
+                    {
+                        filePaths.add(uri.toString())
+
+                    }
+                    filePaths.reverse()
+
                     binding.placeholderimage.visibility = View.GONE
 
                     val list = mutableListOf<CarouselItem>()
-                    list.reverse()
 
                     for (file in filePaths)
                     {
                         list.add(
-                            CarouselItem(
-                                imageUrl = file
-                            )
+                            CarouselItem(file)
                         )
                     }
 
@@ -71,17 +78,25 @@ class RegisterProduct : AppCompatActivity() {
                 }
             }
 
-        binding.btnAdd.setOnClickListener{
+        val launcher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                    // Use the uri to load the image
 
-            launcher.launch(
-                FilePicker.Builder(this)
-                    .pickMediaBuild(
-                        PickMediaConfig(
-                        mPickMediaType = PickMediaType.ImageOnly,
-                        allowMultiple = true,
-                    )
-                    )
-            )
+                }
+            }
+
+        binding.btnAdd.setOnClickListener{
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//            launcher.launch(
+//                FilePicker.Builder(this)
+//                    .pickMediaBuild(
+//                        PickMediaConfig(
+//                        mPickMediaType = PickMediaType.ImageOnly,
+//                        allowMultiple = true,
+//                    )
+//                    )
+//            )
 
         }
 

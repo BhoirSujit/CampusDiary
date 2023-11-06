@@ -89,7 +89,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="version 2.1\n\nIn today's digital age, effective communication and social interaction within educational institutions have become increasingly important. However, it is limited to class and small groups. This proposal outlines the creation of a dedicated Campus Social Network to address these needs. The Campus Diary aims to socialize students, department and staff across the campus"
+            android:text="version 2.9\n\nIn today's digital age, effective communication and social interaction within educational institutions have become increasingly important. However, it is limited to class and small groups. This proposal outlines the creation of a dedicated Campus Social Network to address these needs. The Campus Diary aims to socialize students, department and staff across the campus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider15" />
@@ -132,6 +132,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView26">
 
             <LinearLayout
+                android:id="@+id/storyset"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -142,6 +143,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/m3"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -152,6 +154,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/glide"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -162,6 +165,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/firebase"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -172,16 +176,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
-                android:padding="5dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="chochanaresh:filepicker"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/whynotimg"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -192,6 +187,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/gson"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -243,6 +239,7 @@
             <LinearLayout
                 android:padding="5dp"
                 android:orientation="horizontal"
+                android:id="@+id/github"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
@@ -252,6 +249,7 @@
             </LinearLayout>
             <LinearLayout
                 android:padding="5dp"
+                android:id="@+id/linkdn"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -262,6 +260,7 @@
             </LinearLayout>
             <LinearLayout
                 android:padding="5dp"
+                android:id="@+id/instagram"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -271,6 +270,7 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/facebook"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

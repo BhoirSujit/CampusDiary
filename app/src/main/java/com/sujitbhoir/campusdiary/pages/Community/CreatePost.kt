@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -16,16 +17,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-import com.nareshchocha.filepickerlibrary.models.PickMediaConfig
-import com.nareshchocha.filepickerlibrary.models.PickMediaType
-import com.nareshchocha.filepickerlibrary.ui.FilePicker
-import com.nareshchocha.filepickerlibrary.utilities.appConst.Const
 import com.sujitbhoir.campusdiary.R
 import com.sujitbhoir.campusdiary.databinding.ActivityCreatePostBinding
 import com.sujitbhoir.campusdiary.dataclasses.CommunityData
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseFirestoreHandler
 import com.sujitbhoir.campusdiary.datahandlers.FirebaseStorageHandler
 import com.sujitbhoir.campusdiary.datahandlers.PostsManager
+import com.sujitbhoir.campusdiary.datahandlers.UsersManager
 import com.sujitbhoir.campusdiary.helperclass.DataHandler
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
@@ -77,14 +75,18 @@ class CreatePost : AppCompatActivity() {
             binding.dpComm.setAdapter(commAdapter)
         }
 
-        val resultActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-        {
-                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                    // Use the uri to load the image
-                    it.data?.getStringArrayListExtra(Const.BundleExtras.FILE_PATH_LIST)!!
-                        .also {
-                            filePaths = it }
+        val pickMultipleMedia =
+            registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+                // Callback is invoked after the user selects media items or closes the
+                // photo picker.
+                if (uris.isNotEmpty()) {
+                    filePaths.clear()
+                    for (uri in uris)
+                    {
+                        filePaths.add(uri.toString())
 
+                    }
+                    filePaths.reverse()
 
                     binding.postimage1.visibility = View.GONE
 
@@ -105,18 +107,23 @@ class CreatePost : AppCompatActivity() {
                 }
             }
 
+
+
         binding.btnAdd.setOnClickListener{
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
-            resultActivity.launch(
-                FilePicker.Builder(this)
-                    .pickMediaBuild(
-                        PickMediaConfig(
-                            mPickMediaType = PickMediaType.ImageOnly,
-                            allowMultiple = true,
-
-                            )
-                    )
-            )
+//            resultActivity.launch(
+//
+//
+//                FilePicker.Builder(this)
+//                    .pickMediaBuild(
+//                        PickMediaConfig(
+//                            mPickMediaType = PickMediaType.ImageOnly,
+//                            allowMultiple = true,
+//
+//                            )
+//                    )
+//            )
 
         }
 
@@ -181,7 +188,8 @@ class CreatePost : AppCompatActivity() {
         postsManager.uploadPost(
             title = binding.tvTitle.text.toString(),
             context = binding.tvContext.text.toString(),
-            authUName = DataHandler.getUserData(this)?.username.toString(),
+            authUName = UsersManager(this).getMyData()!!.username,
+            authId = UsersManager(this).getMyData()!!.id,
             communityName = binding.dpComm.text.toString(),
             campus = comData.campus,
             communityId = comData.id,
