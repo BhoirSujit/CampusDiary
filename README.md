@@ -27,7 +27,7 @@ This project was created using Android studio and Firebase for the database conn
 ## Installation
 Clone this repository and import into **Android Studio**
 ```bash
-git clone (https://github.com/BhoirSujit/CampusDiary/)
+git clone https://github.com/BhoirSujit/CampusDiary/
 ```
 
 ## Configuration
