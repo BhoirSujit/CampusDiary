@@ -7,10 +7,10 @@ This project was created using Android studio and Firebase for the database conn
 
 ##  Sceenshot
 - ### Login
-![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/e7af6e59-3512-4bc6-bf15-1a4322867a93)   ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/194aeaf2-93bd-4ed7-aa8f-2aa8ec373356)
+![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/e7af6e59-3512-4bc6-bf15-1a4322867a93) ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/194aeaf2-93bd-4ed7-aa8f-2aa8ec373356)
 
 - ### Registration
-![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/6005d48b-9fad-43fd-8bde-3074d8bae7c6)   ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/19e4fa8a-e41d-4f30-8186-6b0991473923)   ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/4440fbd9-b106-48b6-9a03-588c8e2cbce9)
+![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/6005d48b-9fad-43fd-8bde-3074d8bae7c6) ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/19e4fa8a-e41d-4f30-8186-6b0991473923) ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/4440fbd9-b106-48b6-9a03-588c8e2cbce9)
 
 - ### Post
 ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/4418e00a-4759-4254-912f-544a69a78660)   ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/a130e97f-eead-4ef4-8e65-d9165557a1be)   ![image](https://github.com/BhoirSujit/CampusDiary/assets/92661835/c87fb21f-0607-4be8-8aab-d5172c80dc69)
